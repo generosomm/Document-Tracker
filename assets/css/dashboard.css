@@ -1,0 +1,167 @@
+/* --- Compact Dashboard Layout --- */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    /* Reduced main padding */
+    padding: 1.5rem; 
+}
+
+.page-header {
+    /* Reduced margin */
+    margin-bottom: 1.5rem; 
+}
+.page-header h2 { font-size: 1.25rem; color: var(--text-main); }
+.page-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+/* --- Component: Compact Stat Cards --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    /* Reduced gap between cards */
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    background: var(--bg-white);
+    
+    /* NEW EFFECTS */
+    box-shadow: var(--shadow-sm);
+    border: 1px solid transparent; /* Prevents layout shift on hover borders */
+    transition: var(--transition);
+    cursor: default; /* Indicates you can't click, but it looks nice */
+}
+
+.stat-card:hover {
+    transform: translateY(-4px); /* Lifts up */
+    box-shadow: var(--shadow-lg); /* Soft glow shadow */
+    border-color: rgba(0,0,0,0.02);
+}
+
+/* Colors (Same as before) */
+.stat-card.yellow { background: var(--state-alert-bg); color: var(--state-alert-text); }
+.stat-card.blue   { background: var(--state-info-bg);  color: var(--state-info-text); }
+.stat-card.green  { background: var(--state-success-bg); color: var(--state-success-text); }
+.stat-card.orange { background: var(--state-warning-bg); color: var(--state-warning-text); }
+
+.stat-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.stat-header span { font-size: 0.8rem; font-weight: 600; }
+.stat-header i { font-size: 1rem; opacity: 0.8; }
+
+/* Smaller, more compact number */
+.stat-value { 
+    font-size: 1.75rem; 
+    font-weight: 700; 
+    line-height: 1; 
+    margin-bottom: 0.25rem; 
+}
+.stat-desc { font-size: 0.75rem; font-weight: 500; opacity: 0.9; }
+
+/* --- Component: Compact Content Panels --- */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    /* Reduced gap between panels */
+    gap: 1rem;
+}
+
+.panel {
+    background: var(--bg-white);
+    border-radius: 10px;
+    padding: 1rem;
+    
+    /* NEW EFFECTS */
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-md); /* Slightly stronger default shadow */
+    transition: box-shadow 0.3s ease;
+}   
+
+.panel:hover {
+    /* We don't move the panel, just make the shadow slightly deeper */
+    box-shadow: var(--shadow-lg);
+    border-color: #cbd5e1;
+}
+
+.panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    /* Tighter header spacing */
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.panel-header h3 { 
+    font-size: 0.95rem; 
+    display: flex; align-items: center; gap: 8px; font-weight: 600;
+}
+
+.badge {
+    background: var(--primary-color); color: white;
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 12px;
+}
+
+/* --- Component: Compact List Items --- */
+.list-container { 
+    display: flex; flex-direction: column; 
+    /* Reduced gap between items items */
+    gap: 0.5rem; 
+}
+
+.list-item {
+    display: flex; align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid #f1f5f9;
+    border-radius: 6px;
+    background: #fff;
+    
+    /* NEW EFFECTS */
+    transition: var(--transition);
+    position: relative; /* Needed for z-index layering */
+    cursor: pointer;
+}
+
+
+.list-item:hover {
+    background: #fff;
+    border-color: var(--primary-color); /* Highlight border color */
+    box-shadow: var(--shadow-md); /* Item pops out */
+    transform: scale(1.01); /* Grows just a TINY bit (1%) */
+    z-index: 10; /* Ensures shadow sits on top of other items */
+}
+
+/* Smaller Icon Box */
+.icon-box {
+    width: 32px; height: 32px; /* Smaller size */
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; /* Smaller icon */
+    flex-shrink: 0;
+}
+.icon-box.blue { background: #EFF6FF; color: var(--primary-color); }
+.icon-box.orange { background: #FFF7ED; color: #EA580C; }
+.icon-box.purple { background: #FAF5FF; color: #9333EA; }
+
+/* Compact Text Styles */
+.item-content { flex-grow: 1; min-width: 0; /* Required for text-overflow to work */ }
+
+.item-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 2px;
+}
+.item-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+.item-ref { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+
+/* Single line description with ellipsis (...) */
+.item-desc {
+    display: block;
+    font-size: 0.8rem; color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.item-meta { font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; }

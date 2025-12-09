@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | Document Tracking System</title>
+    
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/analytics.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-section">
+            <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="City Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>Document Tracking System</h1>
+                <span>City Government of Sto. Tomas, Batangas</span>
+            </div>
+        </div>
+        <nav class="navbar">
+            <a href="dashboard.html"><i class="ri-home-line"></i> Home</a>
+            
+            <a href="#"><i class="ri-file-list-line"></i> Document Tracking</a>
+            
+            <a href="#" class="active"><i class="ri-bar-chart-box-line"></i> Analytics</a>
+            
+            <a href="#"><i class="ri-archive-line"></i> Records</a>
+        </nav>
+        <div class="header-actions">
+            <div class="user-profile">
+                <div class="user-info"><span class="name">Juan Dela Cruz</span><span class="role">Department Head</span></div>
+                <i class="ri-logout-box-r-line"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="analytics-container">
+        
+        <div class="page-header flex-header">
+            <div>
+                <h2>Analytics Dashboard</h2>
+                <p>Comprehensive insights and performance metrics</p>
+            </div>
+            <div class="header-tools">
+                <button class="btn btn-white"><i class="ri-calendar-line"></i> All Time</button>
+                <button class="btn btn-dark"><i class="ri-download-line"></i> Export Analytics</button>
+            </div>
+        </div>
+
+        <section class="grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Document Status Distribution</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Department Workload</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="workloadChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid-sidebar-layout">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Processing Time Trends</h3>
+                    <span class="sub-text">Average hours over last 7 days</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card blue">
+                    <div class="icon-bubble"><i class="ri-speed-line"></i></div>
+                    <div>
+                        <h4>Processing Speed</h4>
+                        <p>Decreased by <strong>15%</strong> this week. Avg 18h turnaround.</p>
+                    </div>
+                </div>
+                <div class="insight-card green">
+                    <div class="icon-bubble"><i class="ri-check-double-line"></i></div>
+                    <div>
+                        <h4>Completion Rate</h4>
+                        <p><strong>52.2%</strong> completion rate. 10% rejection rate.</p>
+                    </div>
+                </div>
+                <div class="insight-card orange">
+                    <div class="icon-bubble"><i class="ri-time-line"></i></div>
+                    <div>
+                        <h4>Bottlenecks</h4>
+                        <p>Primary delay: <strong>Signature Collection</strong> (Avg 2.3 days).</p>
+                    </div>
+                </div>
+                <div class="insight-card red">
+                    <div class="icon-bubble"><i class="ri-alert-line"></i></div>
+                    <div>
+                        <h4>Revision Patterns</h4>
+                        <p><strong>45%</strong> of revisions due to incomplete info.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card table-card">
+            <div class="card-header">
+                <h3><i class="ri-focus-3-line"></i> Personalized Performance Insights</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Document Title</th>
+                            <th>Status</th>
+                            <th>Processing Time</th>
+                            <th>Performance</th>
+                            <th>AI Suggestion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="insights-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/analytics.js"></script>
+</body>
+</html>

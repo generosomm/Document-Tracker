@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Document Tracking System</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css"> <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo-section">
+            <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="City Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>Document Tracking System</h1>
+                <span>City Government of Sto. Tomas, Batangas</span>
+            </div>
+        </div>
+        <nav class="navbar">
+            <a href="#" class="active"><i class="ri-home-line"></i> Home</a>
+            
+            <a href="#"><i class="ri-file-list-line"></i> Document Tracking</a>
+            
+            <a href="analytics.html"><i class="ri-bar-chart-box-line"></i> Analytics</a>
+            
+            <a href="#"><i class="ri-archive-line"></i> Records</a>
+        </nav> 
+        <div class="header-actions">
+            <button class="btn btn-light" id="open-modal"><i class="ri-upload-cloud-line"></i> Submit Document</button>
+            <div class="user-profile">
+                <div class="user-info"><span class="name">Juan Dela Cruz</span><span class="role">Department Head</span></div>
+                <i class="ri-logout-box-r-line"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="page-header">
+            <h2>Dashboard Overview</h2>
+            <p>Monitor document status and recent submissions</p>
+        </div>
+
+        <section class="stats-grid">
+            <article class="stat-card yellow">
+                <div class="stat-header"><span>New Today</span><i class="ri-add-line"></i></div>
+                <div class="stat-value">20</div>
+                <div class="stat-desc">Awaiting Initial Review</div>
+            </article>
+            <article class="stat-card blue">
+                <div class="stat-header"><span>In Progress</span><i class="ri-pulse-line"></i></div>
+                <div class="stat-value">30</div>
+                <div class="stat-desc">Currently being processed</div>
+            </article>
+            <article class="stat-card green">
+                <div class="stat-header"><span>Completed</span><i class="ri-checkbox-circle-line"></i></div>
+                <div class="stat-value">55</div>
+                <div class="stat-desc">Signed and completed</div>
+            </article>
+            <article class="stat-card orange">
+                <div class="stat-header"><span>Needs Attention</span><i class="ri-alert-line"></i></div>
+                <div class="stat-value">18</div>
+                <div class="stat-desc">Requires revision</div>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="ri-notification-3-line"></i> New Documents</h3><span class="badge">20 Pending</span>
+                </div>
+                <div class="list-container">
+                    <div class="list-item">
+                        <div class="icon-box blue"><i class="ri-file-text-line"></i></div>
+                        <div class="item-content">
+                            <div class="item-head">
+                                <h4 class="item-title">Office Hours Update</h4><span class="item-ref">MEMO-2025-001</span>
+                            </div>
+                            <span class="item-meta"><i class="ri-time-line"></i> Just now</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box blue"><i class="ri-file-text-line"></i></div>
+                        <div class="item-content">
+                            <div class="item-head">
+                                <h4 class="item-title">Processing Guidelines</h4><span class="item-ref">MEMO-2025-002</span>
+                            </div>
+                            <span class="item-meta"><i class="ri-time-line"></i> 1 hr ago</span>
+                        </div>
+                    </div>
+                     <div class="list-item">
+                        <div class="icon-box blue"><i class="ri-file-text-line"></i></div>
+                        <div class="item-content">
+                            <div class="item-head">
+                                <h4 class="item-title">IT Maintenance Notice</h4><span class="item-ref">MEMO-2025-003</span>
+                            </div>
+                            <span class="item-meta"><i class="ri-time-line"></i> 2 hrs ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="ri-mail-line"></i> Memos</h3><span class="badge" style="background-color: #9333ea;">5 New</span>
+                </div>
+                <div class="list-container">
+                    <div class="list-item">
+                        <div class="icon-box orange"><i class="ri-mail-open-line"></i></div>
+                        <div class="item-content">
+                            <div class="item-head">
+                                <h4 class="item-title">Holiday Schedule</h4><span class="item-ref">MEMO-2025-001</span>
+                            </div>
+                            <p class="item-desc">Adjusted office hours for the upcoming holiday season. All departments must comply.</p>
+                            <span class="item-meta"><i class="ri-calendar-line"></i> 2025-01-07</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box purple"><i class="ri-mail-open-line"></i></div>
+                        <div class="item-content">
+                            <div class="item-head">
+                                <h4 class="item-title">New Processing Guidelines</h4><span class="item-ref">MEMO-2025-002</span>
+                            </div>
+                            <p class="item-desc">Updated procedures for document routing and approval workflows effective immediately.</p>
+                            <span class="item-meta"><i class="ri-calendar-line"></i> 2025-01-08</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+            <div class="modal-overlay" id="submit-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div>
+                    <h3>Submit New Document</h3>
+                    <p>Upload a PDF document and set up its routing sequence.</p>
+                </div>
+                <button class="close-btn" id="close-modal"><i class="ri-close-line"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="document-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label>Document Title *</label>
+                        <input type="text" placeholder="Enter document title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea placeholder="Enter document description" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="category-select" required>
+                            <option value="" disabled selected>Select category</option>
+                            <option value="Contracts">Contracts</option>
+                            <option value="Invoices">Invoices</option>
+                            <option value="Reports">Reports</option>
+                            <option value="Memos">Memos</option>
+                            <option value="Legal">Legal Documents</option>
+                        </select>
+                        <p class="helper-text">Selecting a category auto-fills the routing sequence</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Routing Sequence *</label>
+                        <div class="routing-container" id="routing-list">
+                            <div class="empty-state">Select a category to view routing</div>
+                        </div>
+
+                        <div class="routing-actions">
+                            <div class="path-display" id="path-display">Path: None</div>
+                            <div class="action-buttons">
+                                <button type="button" class="btn-text" id="add-dept-btn">+ Add Dept</button>
+                                <button type="button" class="btn-text text-red" id="clear-btn">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload PDF Document</label>
+                        <div class="file-upload-box">
+                            <input type="file" id="file-upload" accept=".pdf">
+                            <div class="file-info">
+                                <span id="file-name">Choose File</span>
+                                <span class="file-meta">No file chosen (PDF only. Max: 10MB)</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-btn">Cancel</button>
+                <button class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+
+<script src="../assets/js/script.js"></script>
+    
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* --- Layout Containers --- */
+.analytics-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* Compact gap between rows */
+}
+
+/* Header Tools */
+.flex-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+}
+.header-tools { display: flex; gap: 10px; }
+.btn-white { background: white; border: 1px solid #cbd5e1; color: var(--text-main); }
+.btn-dark { background: #1e293b; color: white; border: none; }
+
+/* --- Grid Systems --- */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Equal split */
+    gap: 1.25rem;
+}
+
+.grid-sidebar-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3rds Chart, 1/3rd Insights */
+    gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+    .grid-2, .grid-sidebar-layout { grid-template-columns: 1fr; }
+}
+
+/* --- Card & Chart Styling --- */
+.card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem; /* Compact padding */
+    box-shadow: var(--shadow-sm);
+}
+
+.card-header { margin-bottom: 1rem; }
+.card-header h3 { font-size: 1rem; font-weight: 600; color: var(--text-main); }
+.sub-text { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Wrapper to constrain chart size */
+.chart-wrapper {
+    position: relative;
+    height: 250px; /* Force compact height */
+    width: 100%;
+}
+
+/* --- AI Insights Grid (Small Cards) --- */
+.insights-grid {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.insight-card {
+    background: white;
+    border: 1px solid #f1f5f9;
+    padding: 0.85rem;
+    border-radius: 8px;
+    display: flex; gap: 12px; align-items: flex-start;
+}
+
+.insight-card h4 { font-size: 0.85rem; margin-bottom: 2px; }
+.insight-card p { font-size: 0.75rem; color: #64748b; line-height: 1.3; }
+
+/* Insight Colors */
+.insight-card .icon-bubble {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1rem;
+}
+.insight-card.blue .icon-bubble { background: #eff6ff; color: #2563eb; }
+.insight-card.green .icon-bubble { background: #dcfce7; color: #166534; }
+.insight-card.orange .icon-bubble { background: #fff7ed; color: #ea580c; }
+.insight-card.red .icon-bubble { background: #fef2f2; color: #dc2626; }
+
+
+/* --- Data Table --- */
+.table-card { padding: 0; overflow: hidden; } /* Remove padding for flush table */
+.table-card .card-header { padding: 1rem 1.25rem; margin-bottom: 0; border-bottom: 1px solid #e2e8f0; }
+
+.table-responsive { overflow-x: auto; }
+
+.analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.analytics-table th {
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.analytics-table td {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+}
+
+.analytics-table tr:hover { background: #f8fafc; }
+
+/* Table Badges */
+.status-badge {
+    padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 500;
+}
+.status-badge.completed { background: #dcfce7; color: #166534; }
+.status-badge.process { background: #dbeafe; color: #1e40af; }
+.status-badge.delayed { background: #fef2f2; color: #991b1b; }
+
+.perf-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;
+}
+.perf-badge.bad { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
+.perf-badge.good { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.perf-badge.warn { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }    
