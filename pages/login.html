@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Tracking System - Login</title>
+  <link rel="stylesheet" href="/assets/css/login.css" />
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <div class="card-header">
+        <img src="/assets/images/city-of-sto-tomas-logo.jpg" class="logo" alt="City Logo">
+        <h2>Document Tracking System</h2>
+        <p>City Government of Sto. Tomas, Batangas</p>
+      </div>
+
+      <form id="loginForm">
+        <label>Email Address</label>
+        <input type="email" id="email" required placeholder="Enter your email">
+
+        <label>Password</label>
+        <input type="password" id="password" required placeholder="Enter your password">
+
+        <button type="submit" id="loginButton">Sign In</button>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("loginButton");
+      btn.disabled = true;
+      btn.innerText = "Signing in...";
+
+      setTimeout(() => {
+        alert("Login functionality disabled (demo only).");
+        btn.disabled = false;
+        btn.innerText = "Sign In";
+      }, 800);
+    });
+  </script>
+
+</body>
+</html>

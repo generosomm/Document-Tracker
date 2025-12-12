@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Tracking | DTS</title>
+    
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/documenttracking.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-section">
+            <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="City Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>Document Tracking System</h1>
+                <span>City Government of Sto. Tomas, Batangas</span>
+            </div>
+        </div>
+        
+        <nav class="navbar">
+            <a href="dashboard.html" class="nav-link"><i class="ri-home-line"></i> Home</a>
+            <a href="documenttracking.html" class="nav-link active"><i class="ri-file-list-line"></i> Document Tracking</a>
+            <a href="analytics.html" class="nav-link"><i class="ri-bar-chart-box-line"></i> Analytics</a>
+            <a href="#" class="nav-link"><i class="ri-archive-line"></i> Records</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="btn btn-light" id="open-modal"><i class="ri-upload-cloud-line"></i> Submit Document</button>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="name">Juan Dela Cruz</span>
+                    <span class="role">Department Head</span>
+                </div>
+                <i class="ri-logout-box-r-line"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="tracking-container">
+        <div class="page-header flex-header">
+            <div>
+                <h2>Document Management</h2>
+                <p>Track, approve, and manage official city documents</p>
+            </div>
+            <div class="header-tools">
+                <button class="btn btn-white"><i class="ri-filter-3-line"></i> Filters</button>
+                <button class="btn btn-dark"><i class="ri-file-chart-line"></i> Generate Report</button>
+            </div>
+        </div>
+
+        <section class="stats-grid">
+            <div class="stat-card yellow">
+                <div class="stat-header"><span>New Requests</span><i class="ri-file-add-line"></i></div>
+                <div class="stat-value">12</div>
+                <div class="stat-desc">Waiting for action</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-header"><span>In Progress</span><i class="ri-loader-4-line"></i></div>
+                <div class="stat-value">45</div>
+                <div class="stat-desc">At various stages</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-header"><span>Completed</span><i class="ri-checkbox-circle-line"></i></div>
+                <div class="stat-value">128</div>
+                <div class="stat-desc">Fully approved</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-header"><span>Needs Revision</span><i class="ri-error-warning-line"></i></div>
+                <div class="stat-value">08</div>
+                <div class="stat-desc">Returned to origin</div>
+            </div>
+        </section>
+
+        <div class="search-bar card">
+            <i class="ri-search-line"></i>
+            <input type="text" placeholder="Search by Tracking ID, Title, or Department...">
+        </div>
+
+        <section class="card table-card">
+            <div class="table-responsive">
+                <table class="tracking-table">
+                    <thead>
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Document Title</th>
+                            <th>Originating Office</th>
+                            <th>Current Stage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="id-cell">#ST-2024-001</td>
+                            <td class="title-cell">
+                                <strong>Purchase Request: Office Supplies</strong>
+                                <span>Stationery and Printer Ink</span>
+                            </td>
+                            <td>City Treasurer</td>
+                            <td>Budget Office</td>
+                            <td><span class="badge badge-blue">Processing</span></td>
+                            <td class="action-btns">
+                                <button class="btn-icon" title="History" onclick="toggleModal('timelineModal')"><i class="ri-history-line"></i></button>
+                                <button class="btn-icon" title="Sign" onclick="toggleModal('signatureModal')"><i class="ri-quill-pen-line"></i></button>
+                                <button class="btn-view">View Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="timelineModal" class="modal-overlay">
+        <div class="modal-container narrow">
+            <div class="panel-header">
+                <h3><i class="ri-history-line"></i> Route History</h3>
+                <button class="close-btn" onclick="toggleModal('timelineModal')">&times;</button>
+            </div>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-dot green"></div>
+                    <div class="timeline-content">
+                        <strong>Office of the Mayor</strong>
+                        <p>Approved & Forwarded</p>
+                        <small>Oct 24, 2024 • 09:00 AM</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot blue"></div>
+                    <div class="timeline-content">
+                        <strong>Budget Office</strong>
+                        <p>Received & Reviewing</p>
+                        <small>Oct 24, 2024 • 02:30 PM</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="signatureModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="panel-header">
+                <h3><i class="ri-quill-pen-line"></i> Digital Signature Placement</h3>
+                <button class="close-btn" onclick="toggleModal('signatureModal')">&times;</button>
+            </div>
+            <div class="signature-workspace">
+                <div class="document-preview">
+                    <div class="mock-content">
+                        <div class="line long"></div>
+                        <div class="line medium"></div>
+                        <div class="line short"></div>
+                        <div class="sign-here-label">Official Signature:</div>
+                    </div>
+                    <div id="drag-signature" class="draggable-signature">
+                        <img src="../assets/images/placeholder-signature.png" alt="Signature">
+                        <div class="drag-indicator"><i class="ri-drag-move-fill"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-white" onclick="toggleModal('signatureModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmSignature()">Confirm Placement</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        // Draggable Logic
+        const dragItem = document.querySelector("#drag-signature");
+        let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+        dragItem.addEventListener("mousedown", (e) => {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            if (e.target === dragItem || dragItem.contains(e.target)) active = true;
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (active) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+                dragItem.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            }
+        });
+
+        document.addEventListener("mouseup", () => { active = false; });
+        
+        function confirmSignature() {
+            alert("Signature position saved successfully!");
+            toggleModal('signatureModal');
+        }
+    </script>
+</body>
+</html>
