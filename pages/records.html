@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records Archive | Document Tracking System</title>
+    
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/tracking.css">
+    <link rel="stylesheet" href="../assets/css/records.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-section">
+            <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="Logo" class="logo-img">
+            <div class="logo-text">
+                <h1>Document Tracking System</h1>
+                <span>City Government of Sto. Tomas, Batangas</span>
+            </div>
+        </div>
+        <nav class="navbar">
+            <a href="dashboard.html" class="nav-link"><i class="ri-home-line"></i> Home</a>
+            <a href="tracking.html" class="nav-link"><i class="ri-file-list-line"></i> Document Tracking</a>
+            <a href="analytics.html" class="nav-link"><i class="ri-bar-chart-box-line"></i> Analytics</a>
+            <a href="records.html" class="nav-link active"><i class="ri-archive-line"></i> Records</a>
+        </nav>
+        <div class="header-actions">
+            <button class="btn btn-light"><i class="ri-upload-cloud-line"></i> Submit Document</button>
+            <div class="user-profile">
+                <div class="user-info"><span class="name">Juan Dela Cruz</span><span class="role">Department Head</span></div>
+                <i class="ri-logout-box-r-line"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="tracking-container"> 
+        <div class="records-header">
+            <div>
+                <h2>Document Records Archive</h2>
+                <p>View all completed, released, and rejected documents history.</p>
+            </div>
+            <button class="btn btn-dark"><i class="ri-file-excel-2-line"></i> Export Records</button>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="toolbar-header">
+                <h3>Archived Documents (<span id="doc-count">0</span>)</h3>
+            </div>
+
+            <div class="toolbar-controls">
+                <div class="search-group">
+                    <label>Search Archives</label>
+                    <div class="input-icon">
+                        <i class="ri-search-line"></i>
+                        <input type="text" id="searchInput" placeholder="Search ID, Title or Dept...">
+                    </div>
+                </div>
+
+                <div class="filters-right">
+                    
+                    <div class="filter-group">
+                        <label>Filter Status</label>
+                        <select id="statusFilter" class="custom-select">
+                            <option value="all">All Records</option>
+                            <option value="completed">Completed</option>
+                            <option value="released">Released</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Department</label>
+                        <select id="deptFilter" class="custom-select">
+                            <option value="all">All Departments</option>
+                            <option value="OCM">OCM</option>
+                            <option value="OCVM">OCVM</option>
+                            <option value="CAO">CAO</option>
+                            <option value="SP">SP</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group relative">
+                        <label>Date Finalized</label>
+                        <div class="date-trigger" id="dateTrigger">
+                            <i class="ri-calendar-line"></i> 
+                            <span id="dateLabel">All Time</span>
+                        </div>
+                        <div class="date-dropdown" id="dateDropdown">
+                            <div class="date-option active" data-range="all">All Time</div>
+                            <div class="date-option" data-range="today">Today</div>
+                            <div class="date-option" data-range="7days">Last 7 Days</div>
+                            <div class="date-option" data-range="30days">Last 30 Days</div>
+                            <div class="date-option" data-range="year">This Year</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="tracking-table">
+                        <thead>
+                            <tr>
+                                <th width="30"><input type="checkbox"></th>
+                                <th width="90">ID</th>
+                                <th>Title / Description</th>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                <th width="80">Dept</th>
+                                <th width="110">Final Status</th>
+                                <th width="110">Category</th>
+                                <th width="120">Date Created</th>
+                                <th width="120">Date Finalized</th> 
+                                <th width="130">Finalized By</th>
+                                <th width="80">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/records.js"></script>
+</body>
+</html>

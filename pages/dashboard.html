@@ -20,11 +20,11 @@
         <nav class="navbar">
             <a href="dashboard.html" class="nav-link"><i class="ri-home-line"></i> Home</a>
             
-            <a href="documenttracking.html" class="nav-link"><i class="ri-file-list-line"></i> Document Tracking</a>
+            <a href="tracking.html" class="nav-link"><i class="ri-file-list-line"></i> Document Tracking</a>
             
             <a href="analytics.html" class="nav-link"><i class="ri-bar-chart-box-line"></i> Analytics</a>
             
-            <a href="#" class="nav-link"><i class="ri-archive-line"></i> Records</a>
+            <a href="records.html" class="nav-link"><i class="ri-archive-line"></i> Records</a>
         </nav>
         <div class="header-actions">
             <button class="btn btn-light" id="open-modal"><i class="ri-upload-cloud-line"></i> Submit Document</button>
@@ -42,22 +42,25 @@
         </div>
 
         <section class="stats-grid">
-            <article class="stat-card yellow">
+            <article class="stat-card yellow" onclick="window.location.href='tracking.html?status=pending'" style="cursor: pointer;">
                 <div class="stat-header"><span>New Today</span><i class="ri-add-line"></i></div>
                 <div class="stat-value">20</div>
                 <div class="stat-desc">Awaiting Initial Review</div>
             </article>
-            <article class="stat-card blue">
+
+            <article class="stat-card blue" onclick="window.location.href='tracking.html?status=progress'" style="cursor: pointer;">
                 <div class="stat-header"><span>In Progress</span><i class="ri-pulse-line"></i></div>
                 <div class="stat-value">30</div>
                 <div class="stat-desc">Currently being processed</div>
             </article>
-            <article class="stat-card green">
+
+            <article class="stat-card green" onclick="window.location.href='tracking.html?status=completed'" style="cursor: pointer;">
                 <div class="stat-header"><span>Completed</span><i class="ri-checkbox-circle-line"></i></div>
                 <div class="stat-value">55</div>
                 <div class="stat-desc">Signed and completed</div>
             </article>
-            <article class="stat-card orange">
+
+            <article class="stat-card orange" onclick="window.location.href='tracking.html?status=revision'" style="cursor: pointer;">
                 <div class="stat-header"><span>Needs Attention</span><i class="ri-alert-line"></i></div>
                 <div class="stat-value">18</div>
                 <div class="stat-desc">Requires revision</div>
