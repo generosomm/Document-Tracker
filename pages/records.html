@@ -8,34 +8,16 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/tracking.css">
     <link rel="stylesheet" href="../assets/css/records.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/submit-document-modal.css">
     
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo-section">
-            <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="Logo" class="logo-img">
-            <div class="logo-text">
-                <h1>Document Tracking System</h1>
-                <span>City Government of Sto. Tomas, Batangas</span>
-            </div>
-        </div>
-        <nav class="navbar">
-            <a href="dashboard.html" class="nav-link"><i class="ri-home-line"></i> Home</a>
-            <a href="tracking.html" class="nav-link"><i class="ri-file-list-line"></i> Document Tracking</a>
-            <a href="analytics.html" class="nav-link"><i class="ri-bar-chart-box-line"></i> Analytics</a>
-            <a href="records.html" class="nav-link active"><i class="ri-archive-line"></i> Records</a>
-        </nav>
-        <div class="header-actions">
-            <button class="btn btn-light"><i class="ri-upload-cloud-line"></i> Submit Document</button>
-            <div class="user-profile">
-                <div class="user-info"><span class="name">Juan Dela Cruz</span><span class="role">Department Head</span></div>
-                <i class="ri-logout-box-r-line"></i>
-            </div>
-        </div>
-    </header>
+    <div id="global-header">  <header class="main-header"> ... </header>
+    </div>
 
     <main class="tracking-container"> 
         <div class="records-header">
@@ -123,10 +105,13 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div>   
     </main>
-
     <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/data.js"></script>
     <script src="../assets/js/records.js"></script>
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/submit-document-modal.js"></script>
+
 </body>
 </html>

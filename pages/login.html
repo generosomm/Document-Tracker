@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document Tracking System - Login</title>
-  <link rel="stylesheet" href="/assets/css/login.css" />
+  
+  <link rel="stylesheet" href="../assets/css/login.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -13,39 +15,34 @@
     <div class="card">
 
       <div class="card-header">
-        <img src="/assets/images/city-of-sto-tomas-logo.jpg" class="logo" alt="City Logo">
+        <img src="../assets/images/city-of-sto-tomas-logo.jpg" class="logo" alt="City Logo">
         <h2>Document Tracking System</h2>
         <p>City Government of Sto. Tomas, Batangas</p>
       </div>
 
       <form id="loginForm">
+        
+        <div id="error-message" class="error-msg" style="display: none;">
+            Invalid email or password.
+        </div>
+
         <label>Email Address</label>
-        <input type="email" id="email" required placeholder="Enter your email">
+        <input type="email" id="email" required placeholder="Enter approved email">
 
         <label>Password</label>
         <input type="password" id="password" required placeholder="Enter your password">
 
         <button type="submit" id="loginButton">Sign In</button>
+        
+        <div class="footer-links">
+            <a href="#">Forgot Password?</a>
+        </div>
       </form>
 
     </div>
   </div>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const btn = document.getElementById("loginButton");
-      btn.disabled = true;
-      btn.innerText = "Signing in...";
-
-      setTimeout(() => {
-        alert("Login functionality disabled (demo only).");
-        btn.disabled = false;
-        btn.innerText = "Sign In";
-      }, 800);
-    });
-  </script>
-
+  <script src="../assets/js/data.js"></script> 
+  <script src="../assets/js/login.js"></script>
 </body>
 </html>

@@ -3,18 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First HTML Page</title>
+    <title>Loading Document Tracking System...</title>
+    
+    <style>
+        /* Simple loading style while the redirect happens */
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #64748b;
+        }
+        .loader {
+            text-align: center;
+        }
+    </style>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. Check if user session exists in LocalStorage
+            // (This was saved by your login.js script)
+            const currentUser = localStorage.getItem('currentUser');
+
+            // 2. Redirect Logic
+            if (currentUser) {
+                // User is logged in -> Go to Dashboard
+                window.location.href = 'pages/dashboard.html';
+            } else {
+                // User is NOT logged in -> Go to Login Page
+                window.location.href = 'pages/login.html';
+            }
+        });
+    </script>
 </head>
 <body>
 
-    <ul class="menu-bar">
-        <li>Home</li>
-        <li>Document Tracking</li>
-        <li>AI Analytics</li>
-        <li>Records</li>
-    </ul>
+    <div class="loader">
+        <p>Loading System...</p>
+    </div>
 
 </body>
 </html>

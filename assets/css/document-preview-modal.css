@@ -1,0 +1,92 @@
+/* assets/css/document-preview-modal.css */
+
+.modal-container.large-viewer { 
+    max-width: 1200px; 
+    height: 90vh; 
+    display: flex; 
+    flex-direction: column; 
+    padding: 0; 
+    overflow: hidden; 
+}
+
+.viewer-header { 
+    padding: 1rem 1.5rem; 
+    border-bottom: 1px solid #e2e8f0; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: white; 
+}
+
+.doc-identity { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; }
+.doc-identity i { color: #2563EB; font-size: 1.2rem; }
+.id-pill { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; color: #64748b; }
+
+.viewer-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Left Side: PDF Preview */
+.doc-preview-section { 
+    flex: 2; 
+    background: #f8fafc; 
+    padding: 2rem; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    overflow-y: auto; 
+}
+.pdf-placeholder { 
+    background: white; 
+    width: 100%; 
+    max-width: 700px; 
+    height: 1000px; /* Simulates long PDF */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    border: 1px solid #e2e8f0; 
+    color: #cbd5e1; 
+}
+
+/* Right Side: Sidebar */
+.doc-sidebar { 
+    flex: 1; 
+    max-width: 350px; 
+    background: white; 
+    border-left: 1px solid #e2e8f0; 
+    padding: 1.5rem; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.5rem; 
+    overflow-y: auto; 
+}
+
+.sidebar-group h5 { 
+    font-size: 0.85rem; 
+    text-transform: uppercase; 
+    color: #94a3b8; 
+    margin-bottom: 1rem; 
+    letter-spacing: 0.5px; 
+}
+
+.prop-item { margin-bottom: 1rem; }
+.prop-item label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 2px; }
+.prop-item span { font-size: 0.9rem; font-weight: 500; color: #1e293b; }
+
+.sidebar-btn { 
+    width: 100%; 
+    padding: 0.8rem; 
+    margin-bottom: 0.8rem; 
+    background: white; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    cursor: pointer; 
+    font-weight: 500; 
+    color: #334155; 
+    transition: 0.2s; 
+}
+.sidebar-btn:hover { border-color: #2563EB; color: #2563EB; background: #eff6ff; }
+.sidebar-btn i { font-size: 1.1rem; }

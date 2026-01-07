@@ -1,0 +1,194 @@
+/* assets/css/transfer-modal.css */
+
+/* --- Overlay & Animation --- */
+#transfer-modal {
+    background: rgba(15, 23, 42, 0.6); /* Darker blur */
+    backdrop-filter: blur(4px);
+    z-index: 1200;
+}
+
+.transfer-card {
+    width: 100%;
+    max-width: 500px; /* Optimal width */
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    animation: slideUpFade 0.3s ease-out;
+}
+
+@keyframes slideUpFade {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Header --- */
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-content {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.icon-badge {
+    width: 40px;
+    height: 40px;
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.modal-header p {
+    margin: 2px 0 0 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* --- Context Box (The grey box) --- */
+.doc-context-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.doc-context-box .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.doc-title-display {
+    color: #334155;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* --- Form Styles --- */
+.modal-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.form-group label .req {
+    color: #ef4444;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select, 
+textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1e293b;
+    background: white;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.select-wrapper select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.select-wrapper i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.select-wrapper select:focus, 
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* --- Footer & Buttons --- */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #64748b;
+}
+.btn-ghost:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+.btn-primary-gradient:hover {
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}

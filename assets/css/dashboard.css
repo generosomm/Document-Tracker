@@ -1,9 +1,6 @@
 /* --- Compact Dashboard Layout --- */
 .dashboard-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    /* Reduced main padding */
-    padding: 1.5rem; 
+    max-width: 95%; margin: 0 auto; padding: 1.5rem; 
 }
 
 .page-header {
