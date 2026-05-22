@@ -1,0 +1,45 @@
+<!-- PNPKI Digital Signature Modal -->
+<div class="modal-overlay" id="pnpki-modal" style="z-index: 9999;">
+    <div class="modal-container" style="max-width: 450px;">
+        <div class="modal-header" style="background: #0f172a; color: white;">
+            <h3><i class="ri-shield-keyhole-line"></i> PNPKI Digital Signature</h3>
+            <button class="close-btn" onclick="closePnpkiModal()" style="color: white;"><i class="ri-close-line"></i></button>
+        </div>
+        
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://dict.gov.ph/wp-content/uploads/2020/02/pnpki-logo.png" alt="PNPKI Logo" style="height: 60px; margin-bottom: 10px;">
+                <p style="font-size: 0.85rem; color: #64748b;">Philippine National Public Key Infrastructure</p>
+            </div>
+
+            <form id="pnpki-form">
+                <input type="hidden" id="pnpki-doc-id">
+                
+                <div class="form-group">
+                    <label style="font-size: 0.85rem;">Digital Certificate (.p12 / .pfx)</label>
+                    <div style="border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 6px; cursor: pointer;" onclick="document.getElementById('pnpki-file').click()">
+                        <i class="ri-file-lock-line" style="font-size: 2rem; color: #2563EB;"></i>
+                        <p id="pnpki-file-name" style="margin: 5px 0; font-size: 0.8rem; color: #64748b;">Click to select your certificate</p>
+                    </div>
+                    <input type="file" id="pnpki-file" accept=".p12, .pfx" style="display: none;" required>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size: 0.85rem;">Private Key Password</label>
+                    <input type="password" id="pnpki-pass" class="form-control" placeholder="Enter your certificate PIN" required>
+                </div>
+
+                <div id="pnpki-status" style="display: none; margin-top: 15px;">
+                    <div style="display: flex; gap: 10px; align-items: center; font-size: 0.8rem; color: #059669;">
+                        <i class="ri-loader-4-line ri-spin"></i>
+                        <span id="pnpki-status-text">Initializing Secure Module...</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-sign-pnpki" class="btn btn-primary" style="width: 100%; margin-top: 20px; background: #0f172a;">
+                    <i class="ri-pen-nib-line"></i> Digitally Sign Document
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

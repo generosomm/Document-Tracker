@@ -1,152 +1,316 @@
+// Global State
+window.currentDateRange = 'all'; 
+window.archivedDocs = [];
+window.activeTab = 'all';
+
+// Initialization
+
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- 1. GET DATA FROM SHARED SOURCE ---
-    // Filter only "Archived" statuses: completed, released, rejected
-    const allDocs = window.documents || [];
-    const archives = allDocs.filter(doc => 
-        ['completed', 'released', 'rejected'].includes(doc.status.toLowerCase())
-    );
-
-    // --- 2. DOM ELEMENTS ---
-    const tableBody = document.getElementById('tableBody');
-    const countDisplay = document.getElementById('doc-count');
-    const searchInput = document.getElementById('searchInput');
-    const statusSelect = document.getElementById('statusFilter');
-    const deptSelect = document.getElementById('deptFilter');
-
-    // Date Dropdown Elements
-    const dateTrigger = document.getElementById('dateTrigger');
-    const dateDropdown = document.getElementById('dateDropdown');
-    const dateLabel = document.getElementById('dateLabel');
-    const dateOptions = document.querySelectorAll('.date-option');
-    let currentDateRange = 'all';
-
-    // --- 3. HELPER: DATES ---
-    function getRelativeDate(daysAgo) {
-        const d = new Date(); d.setDate(d.getDate() - daysAgo);
-        return d.toISOString().split('T')[0];
-    }
-
-    // --- 4. RENDER FUNCTION ---
-    function renderTable() {
-        tableBody.innerHTML = '';
-
-        // Get filter values
-        const term = searchInput ? searchInput.value.toLowerCase() : '';
-        const stat = statusSelect ? statusSelect.value : 'all';
-        const dept = deptSelect ? deptSelect.value : 'all';
-
-        const filtered = archives.filter(doc => {
-            // 1. Text Search
-            const searchMatch = doc.title.toLowerCase().includes(term) || 
-                                doc.id.toLowerCase().includes(term);
-            
-            // 2. Status Filter
-            const statusMatch = (stat === 'all') ? true : doc.status === stat;
-            
-            // 3. Dept Filter
-            const deptMatch = (dept === 'all') ? true : doc.dept === dept;
-
-            // 4. Date Filter (Check 'dateFinalized')
-            let dateMatch = true;
-            if (currentDateRange !== 'all') {
-                const docDate = doc.dateFinalized || doc.date; // Fallback
-                const today = getRelativeDate(0);
-
-                if (currentDateRange === 'today') {
-                    dateMatch = (docDate === today);
-                } 
-                else if (currentDateRange === '7days') {
-                    dateMatch = docDate >= getRelativeDate(7);
-                } 
-                else if (currentDateRange === '30days') {
-                    dateMatch = docDate >= getRelativeDate(30);
-                } 
-                else if (currentDateRange === 'year') {
-                    const currentYear = new Date().getFullYear().toString();
-                    dateMatch = docDate.startsWith(currentYear);
-                }
-            }
-
-            return searchMatch && statusMatch && deptMatch && dateMatch;
-        });
-
-        // Update Counter
-        if(countDisplay) countDisplay.textContent = filtered.length;
-
-        // Empty State
-        if (filtered.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #94a3b8;">No archived records found matching filters.</td></tr>`;
-            return;
-        }
-
-        // Render Rows
-        filtered.forEach(doc => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="checkbox"></td>
-                <td style="font-family:monospace; color:#64748b;">${doc.id.replace('DOC-', '')}</td>
-                <td>
-                    <div class="cell-content">
-                        <span class="row-title">${doc.title}</span>
-                    </div>
-                </td>
-                <td style="font-weight:600; color:#334155;">${doc.dept}</td>
-                <td>${getStatusBadge(doc.status)}</td>
-                <td>${doc.category}</td>
-                <td>${doc.date}</td>
-                <td><span class="finalized-date">${doc.dateFinalized || '-'}</span></td>
-                <td>${doc.finalizedBy || '-'}</td>
-                <td style="white-space:nowrap;">
-                    <button class="action-btn"><i class="ri-eye-line"></i></button>
-                    <button class="action-btn"><i class="ri-download-line"></i></button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
-    function getStatusBadge(status) {
-        const config = {
-            released:   { icon: 'ri-send-plane-fill', label: 'Released', class: 'released' },
-            completed:  { icon: 'ri-checkbox-circle-line', label: 'Completed', class: 'completed' },
-            rejected:   { icon: 'ri-close-circle-line', label: 'Rejected', class: 'rejected' }
-        };
-        const s = config[status.toLowerCase()] || config.completed;
-        return `<span class="status-badge ${s.class}"><i class="${s.icon}"></i> ${s.label}</span>`;
-    }
-
-    // --- 5. EVENT LISTENERS ---
+    populateDeptOptions();
+    fetchArchivedDocuments();
+    initFilters();
+    initTabs();
     
-    if(searchInput) searchInput.addEventListener('input', renderTable);
-    if(statusSelect) statusSelect.addEventListener('change', renderTable);
-    if(deptSelect) deptSelect.addEventListener('change', renderTable);
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.filter-group.relative')) {
+            document.getElementById('dateDropdown')?.classList.remove('show');
+        }
+    });
+});
 
-    // Date Dropdown
-    if (dateTrigger && dateDropdown) {
-        dateTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dateDropdown.classList.toggle('show');
-        });
+// Auto Search
+const urlParams = new URLSearchParams(window.location.search);
+    const searchId = urlParams.get('search');
 
-        document.addEventListener('click', (e) => {
-            if (!dateTrigger.contains(e.target) && !dateDropdown.contains(e.target)) {
-                dateDropdown.classList.remove('show');
-            }
-        });
+    function performAutoSearch() {
+        if (!searchId) return;
 
-        dateOptions.forEach(opt => {
-            opt.addEventListener('click', () => {
-                dateOptions.forEach(o => o.classList.remove('active'));
-                opt.classList.add('active');
-                if(dateLabel) dateLabel.innerText = opt.innerText;
-                currentDateRange = opt.getAttribute('data-range');
-                renderTable();
-                dateDropdown.classList.remove('show');
-            });
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = searchId; 
+            
+            const checkData = setInterval(() => {
+                if (window.archivedDocs && window.archivedDocs.length > 0) {
+                    clearInterval(checkData);
+                    console.log("Auto-searching Records for:", searchId);
+                    renderTable(window.archivedDocs); // Trigger render
+                }
+            }, 200);
+
+            setTimeout(() => clearInterval(checkData), 5000);
+        }
+    }
+    performAutoSearch();
+
+// Fetch Data
+async function fetchArchivedDocuments() {
+    const tableBody = document.getElementById('tableBody');
+    if(tableBody) tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748b;"><i class="ri-loader-4-line ri-spin"></i> Loading archives...</td></tr>';
+
+    try {
+        const isPages = window.location.pathname.includes('/pages/');
+        const apiPath = isPages ? '../assets/api/get_documents.php?type=archive' : './assets/api/get_documents.php?type=archive';
+
+        const response = await fetch(apiPath);
+        const data = await response.json();
+
+        window.archivedDocs = Array.isArray(data) ? data : []; 
+        updateStats(window.archivedDocs);
+        renderTable(window.archivedDocs);
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+        if(tableBody) tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#ef4444;">Failed to load records.</td></tr>';
+    }
+}
+
+// Stats Logic
+function updateStats(docs) {
+    const counts = { completed: 0, released: 0, rejected: 0, total: docs.length };
+    
+    docs.forEach(d => {
+        const s = (d.status || '').toLowerCase();
+        if(s === 'completed') counts.completed++;
+        else if(s === 'released') counts.released++;
+        else if(s === 'rejected') counts.rejected++;
+    });
+
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+    set('stat-completed', counts.completed);
+    set('stat-released', counts.released);
+    set('stat-rejected', counts.rejected);
+    set('stat-total', counts.total);
+}
+
+// Initialize Tabs
+function initTabs() {
+    const tabs = document.querySelectorAll('.tab-btn-records');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            window.activeTab = tab.dataset.tab;
+            renderTable(window.archivedDocs);
         });
+    });
+}
+
+// Render Table
+function renderTable(docs) {
+    const tbody = document.getElementById('tableBody');
+    const countDisplay = document.getElementById('doc-count');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const userName = user ? user.name : '';
+    const userDept = user ? user.dept : '';
+
+    const term = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const status = document.getElementById('statusFilter')?.value || 'all';
+    const dept = document.getElementById('deptFilter')?.value || 'all';
+
+    let filtered = docs.filter(d => {
+        const matchesText = (d.title||'').toLowerCase().includes(term) || 
+                           (d.id||'').toLowerCase().includes(term) || 
+                           (d.description||'').toLowerCase().includes(term);
+        const matchesStatus = status === 'all' || (d.status||'').toLowerCase() === status;
+        const matchesDept = dept === 'all' || d.dept === dept;
+        const matchesDate = checkDateRange(d);
+        
+        let matchesTab = true;
+        if (window.activeTab === 'uploaded') {
+            matchesTab = (d.uploaded_by || '').toLowerCase() === userName.toLowerCase() || 
+                        (d.dept || '').toLowerCase() === userDept.toLowerCase();
+        } else if (window.activeTab === 'routed') {
+            matchesTab = checkIfProcessedByMe(d, userDept, userName);
+        }
+        
+        return matchesText && matchesStatus && matchesDept && matchesDate && matchesTab;
+    });
+    
+    updateStats(filtered);
+
+    filtered.sort((a, b) => {
+        return getFinalizedDate(b) - getFinalizedDate(a);
+    });
+
+    if (countDisplay) countDisplay.innerText = filtered.length;
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:3rem; color:#94a3b8;">No archived records found matching criteria.</td></tr>`;
+        return;
     }
 
-    // --- 6. INITIAL RENDER ---
-    renderTable();
-});
+    filtered.forEach(doc => {
+        const dateObj = getFinalizedDate(doc);
+        const dateStr = dateObj.toISOString().split('T')[0];
+
+        const tr = document.createElement('tr');
+        tr.onclick = function(e) {
+            if(!e.target.closest('.action-btn') && e.target.type !== 'checkbox') {
+               window.openDocViewer(doc);
+            }
+        };
+
+        tr.innerHTML = `
+            <td><input type="checkbox"></td>
+            <td class="col-id">${doc.id}</td>
+            <td class="col-title" title="${doc.title}">${doc.title}</td>
+            <td class="col-dept" title="${doc.dept}">${doc.dept}</td>
+            <td>${getStatusBadge(doc.status)}</td>
+            <td>${doc.category}</td>
+            <td style="font-size:0.75rem">${doc.date}</td>
+            <td style="font-size:0.75rem; font-weight:600;">${dateStr}</td>
+            <td>${doc.finalized_by || '-'}</td>
+            <td>
+                <button class="action-btn" onclick="window.openDocViewer(${JSON.stringify(doc).replace(/"/g, '&quot;')})" title="View Details">
+                    <i class="ri-eye-line"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// 4. HELPERS
+
+// Helper to get the actual Date object of when it was finalized
+function getFinalizedDate(doc) {
+    // If timeline exists, the latest entry (index 0) is the finalizing action
+    if (doc.timeline && doc.timeline.length > 0) {
+        return new Date(doc.timeline[0].time.replace(/-/g, "/"));
+    }
+    return new Date(doc.date.replace(/-/g, "/"));
+}
+
+function checkDateRange(doc) {
+    if (window.currentDateRange === 'all') return true;
+    
+    const targetDate = getFinalizedDate(doc);
+    const now = new Date();
+    
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (window.currentDateRange === 'today') {
+        return targetDate >= startOfToday;
+    }
+    if (window.currentDateRange === '7days') {
+        const pastDate = new Date(startOfToday);
+        pastDate.setDate(pastDate.getDate() - 7);
+        return targetDate >= pastDate;
+    }
+    if (window.currentDateRange === '30days') {
+        const pastDate = new Date(startOfToday);
+        pastDate.setDate(pastDate.getDate() - 30);
+        return targetDate >= pastDate;
+    }
+    if (window.currentDateRange === 'year') {
+        return targetDate.getFullYear() === now.getFullYear();
+    }
+    return true;
+}
+
+function getStatusBadge(status) {
+    const config = {
+        released: { icon: 'ri-send-plane-fill', class: 'released' },
+        completed: { icon: 'ri-checkbox-circle-fill', class: 'completed' },
+        signed: { icon: 'ri-pen-nib-fill', class: 'completed' },
+        progress: { icon: 'ri-loader-4-line', class: 'progress' },     // Blue
+        pending: { icon: 'ri-time-line', class: 'pending' },           // Orange/Gray
+        revision: { icon: 'ri-alert-line', class: 'revision' },        // Orange
+        rejected: { icon: 'ri-close-circle-line', class: 'rejected' }  // Red
+    };
+    
+    // Normalize status
+    const sKey = (status || '').toLowerCase();
+    
+    // Map 'signed' to config or fallback to progress
+    const s = config[sKey] || config.progress;
+    
+    // Format text (e.g., "Signed" instead of "signed")
+    let label = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
+    if(sKey === 'signed') label = "Signed (Ready)"; // Explicit label
+
+    return `<span class="status-badge ${s.class}" style="${sKey === 'signed' ? 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;' : ''}"><i class="${s.icon}"></i> ${label}</span>`;
+}
+
+function toggleDateDropdown() { document.getElementById('dateDropdown')?.classList.toggle('show'); }
+
+function setDateFilter(range) {
+    window.currentDateRange = range;
+    const labels = { 'all': 'All Time', 'today': 'Today', '7days': 'Last 7 Days', '30days': 'Last 30 Days', 'year': 'This Year' };
+    document.getElementById('dateLabel').innerText = labels[range];
+    
+    document.querySelectorAll('.date-option').forEach(opt => opt.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('dateDropdown').classList.remove('show');
+    
+    renderTable(window.archivedDocs);
+}
+
+// External Access for Stat Cards
+window.filterData = function(status) {
+    const sel = document.getElementById('statusFilter');
+    if(sel) { sel.value = status; renderTable(window.archivedDocs); }
+};
+
+function initFilters() {
+    document.getElementById('searchInput')?.addEventListener('input', () => renderTable(window.archivedDocs));
+    document.getElementById('statusFilter')?.addEventListener('change', () => renderTable(window.archivedDocs));
+    document.getElementById('deptFilter')?.addEventListener('change', () => renderTable(window.archivedDocs));
+}
+
+async function populateDeptOptions() {
+    const select = document.getElementById('deptFilter');
+    if(!select) return;
+    
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const userDept = user ? user.dept : null;
+    
+    try {
+        const isPages = window.location.pathname.includes('/pages/');
+        const res = await fetch(isPages ? '../assets/api/get_departments.php' : './assets/api/get_departments.php');
+        const depts = await res.json();
+        if(Array.isArray(depts)) {
+            select.innerHTML = '';
+            
+            const allOpt = document.createElement('option');
+            allOpt.value = 'all';
+            allOpt.textContent = 'All Departments';
+            allOpt.selected = true;
+            select.appendChild(allOpt);
+            
+            if (userDept) {
+                const myDeptOpt = document.createElement('option');
+                myDeptOpt.value = userDept;
+                myDeptOpt.textContent = `My Department (${userDept})`;
+                select.appendChild(myDeptOpt);
+            }
+            
+            depts.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d; 
+                opt.textContent = d;
+                select.appendChild(opt);
+            });
+        }
+    } catch(e) {}
+}
+
+function checkIfProcessedByMe(doc, myDept, myName) {
+    if (!doc.timeline || !Array.isArray(doc.timeline)) return false;
+    const myDeptLower = myDept.toLowerCase();
+    const myNameLower = myName.toLowerCase();
+    
+    return doc.timeline.some(t => {
+        const roleMatch = t.role && t.role.toLowerCase().includes(myDeptLower);
+        const userMatch = t.user && t.user.toLowerCase() === myNameLower;
+        return roleMatch || userMatch;
+    });
+}
+
+function exportRecords() { 
+    showToast("Exporting feature coming soon!", "info"); 
+}

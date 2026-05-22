@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control | Document Tracking System</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+        <link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/admin-modals.css">
+<!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <div id="global-header"></div>
+
+    <!-- Main Content -->
+    <main class="admin-container">
+        <div class="admin-layout">
+            
+            <aside class="admin-sidebar">
+                <div class="sidebar-header">
+                    <h3>System Admin</h3>
+                    <p>Configuration</p>
+                </div>
+                <nav class="sidebar-nav">
+                    <button class="tab-btn active" data-tab="users" onclick="switchTab('users')">
+                        <i class="ri-user-settings-line"></i> 
+                        <span>User Management</span>
+                    </button>
+                    <button class="tab-btn" data-tab="depts" onclick="switchTab('depts')">
+                        <i class="ri-building-line"></i> 
+                        <span>Departments</span>
+                    </button>
+                    <button class="tab-btn" data-tab="routes" onclick="switchTab('routes')">
+                        <i class="ri-git-merge-line"></i> 
+                        <span>Workflows</span>
+                    </button>
+                    <button class="tab-btn" data-tab="roles" onclick="switchTab('roles')">
+                        <i class="ri-shield-keyh-line"></i> 
+                        <span>Roles & Access</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <div class="admin-content">
+                
+                <div id="tab-users" class="tab-pane active">
+                    <div class="section-header">
+                        <div>
+                            <h2>User Accounts</h2>
+                            <p>Manage system access and roles.</p>
+                        </div>
+                        <button class="btn-add" onclick="openAddUserModal()">
+                            <i class="ri-add-line"></i> Register User
+                        </button>
+                    </div>
+                    <div class="data-card">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th>User Details</th>
+                                    <th>Role</th>
+                                    <th>Dept</th>
+                                    <th style="text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-depts" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Departments</h2>
+                            <p>Manage organizational units.</p>
+                        </div>
+                        <button class="btn-add" onclick="openAddDeptModal()">
+                            <i class="ri-add-line"></i> Add Department
+                        </button>
+                    </div>
+                    <div class="data-card">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 90%;">Department Name</th>
+                                    <th style="text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dept-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-routes" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Workflow Configuration</h2>
+                            <p>Define how documents move between departments.</p>
+                        </div>
+                    </div>
+
+                    <div class="data-card" style="margin-bottom: 24px; border-left: 4px solid var(--primary);">
+                        <h4 style="margin-bottom: 15px; color: var(--text-dark);">
+                            <i class="ri-tools-line"></i> Workflow Builder
+                        </h4>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                            <div>
+                                <div class="form-group">
+                                    <label>Route Name / Category</label>
+                                    <input type="text" id="route-cat" class="form-control" placeholder="e.g. Leave Application">
+                                </div>
+                                <div class="form-group">
+                                    <label>Available Departments</label>
+                                    <input type="text" id="dept-search" class="form-control" placeholder="Search departments..." onkeyup="filterDeptChips()" style="margin-bottom: 10px; font-size: 0.85rem;">
+                                    
+                                    <div class="dept-chips-wrapper" id="dept-chips-container" style="max-height: 300px; overflow-y: auto; border:1px solid #e2e8f0; padding:10px; border-radius:8px; background: #f8fafc;"></div>
+                                </div>
+                            </div>
+
+                            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                                <label style="display:block; margin-bottom:10px; font-weight:600; color:#64748b;">
+                                    Sequence Preview (Drag to Reorder):
+                                </label>
+                                
+                                <div class="route-visualizer" id="route-viz" style="min-height: 100px; display:flex; flex-direction:column; gap:8px;">
+                                    <span class="placeholder" style="color:#94a3b8; font-style:italic; padding: 20px; text-align:center;">
+                                        Select departments from the left to build the chain...
+                                    </span>
+                                </div>
+
+                                <div class="actions-row" style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
+                                    <button class="btn btn-outline" id="btn-reset-route" onclick="clearRoute()">
+                                        <i class="ri-refresh-line"></i> Reset
+                                    </button>
+                                    <button class="btn btn-primary" id="btn-save-route" onclick="saveRoute()">
+                                        <i class="ri-save-line"></i> Save Workflow
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-card">
+                        <h4 style="margin-bottom: 15px;">Active Workflows</h4>
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;">Route Name</th>
+                                    <th>Sequence Flow</th>
+                                    <th style="text-align:center; width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="route-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-roles" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Roles & Permissions</h2>
+                            <p>Control feature access for each user role.</p>
+                        </div>
+                        <button class="btn-add" onclick="openAddRoleModal()">
+                            <i class="ri-add-line"></i> Add New Role
+                        </button>
+                    </div>
+
+                    <div class="data-card">
+                        <table class="compact-table" id="perm-table">
+                            <thead id="perm-table-head">
+                                </thead>
+                            <tbody id="perm-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>          
+    </main>
+
+    <!-- JavaScript Files -->
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/permission-manager.js"></script>
+    <script src="../assets/js/submit-document-modal.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/admin-modals.js"></script> 
+</body>

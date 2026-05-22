@@ -1,15 +1,112 @@
-<div class="modal-overlay" id="timeline-modal" style="z-index: 1100;">
-    <div class="modal-container medium">
+const TIMELINE_HTML = `
+<div class="modal-overlay" id="timeline-modal" style="z-index: 2147483647;">
+    <div class="modal-container timeline-style">
         <div class="modal-header">
-            <div>
-                <h3>Document Timeline</h3>
-                <p style="font-size:0.85rem; color:#64748b;">Full audit history for <strong id="tl-doc-id">...</strong></p>
+            <div class="header-left">
+                <div class="icon-circle orange"><i class="ri-history-line"></i></div>
+                <div><h3>Document Timeline</h3><p class="sub-header">Audit Trail for <span id="tl-doc-id">...</span></p></div>
             </div>
-            <button class="close-btn" id="close-timeline-btn"><i class="ri-close-line"></i></button>
+            <button class="close-btn" id="close-timeline-btn" style="cursor:pointer;"><i class="ri-close-line"></i></button>
         </div>
-        <div class="modal-body" style="background: #fafafa; padding-top:1rem;">
-            <div class="timeline-feed" id="timeline-feed-content">
-                </div>
+        <div class="modal-body">
+            <div class="timeline-container" id="timeline-list">
+                <div style="padding:20px; text-align:center;"><i class="ri-loader-4-line ri-spin"></i> Loading...</div>
+            </div>
         </div>
     </div>
-</div>
+</div>`;
+
+window.openTimeline = function(docId) {
+    if (!document.getElementById('timeline-modal')) {
+        document.body.insertAdjacentHTML('beforeend', TIMELINE_HTML);
+        
+        const isPages = window.location.pathname.includes('/pages/');
+        const cssPath = isPages ? '../assets/css/document-timeline-modal.css?v=99' : './assets/css/document-timeline-modal.css?v=99';
+        
+        if (!document.querySelector(`link[href*="document-timeline-modal.css"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet'; link.href = cssPath;
+            document.head.appendChild(link);
+        }
+    }
+    
+    const modal = document.getElementById('timeline-modal');
+    modal.classList.add('active');
+
+    const closeBtn = document.getElementById('close-timeline-btn');
+    closeBtn.onclick = () => { modal.classList.remove('active'); };
+
+    const titleId = document.getElementById('tl-doc-id');
+    if(titleId) titleId.innerText = docId;
+    
+    fetchTimelineData(docId);
+};
+
+async function fetchTimelineData(docId) {
+    const list = document.getElementById('timeline-list');
+    const isPages = window.location.pathname.includes('/pages/');
+    const api = isPages ? '../assets/api/get_timeline.php' : './assets/api/get_timeline.php';
+
+    try {
+        const res = await fetch(`${api}?doc_id=${docId}`);
+        
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Server Response (Not JSON):", text);
+            throw new Error("Invalid Server Response");
+        }
+        
+        if(!Array.isArray(data) || data.length === 0) {
+            list.innerHTML = '<p style="text-align:center; padding:20px; color:#64748b;">No history found.</p>';
+            return;
+        }
+
+        let html = '<div class="timeline-wrapper">';
+        
+        // Display entries in chronological order (oldest to newest)
+        data.forEach((item, idx) => {
+            const actionType = item.action ? item.action.toLowerCase() : 'viewed';
+            let actionDisplay = item.action;
+            if (item.action === 'Viewed' && item.view_number) {
+                actionDisplay = `Viewed <span style="font-size:0.75rem; color:#2563eb; font-weight:700; background:#eff6ff; padding:1px 4px; border-radius:3px; border:1px solid #bfdbfe;">#${item.view_number}</span>`;
+            }
+            
+            const dept = item.role || 'System';
+            
+            html += `
+                <div style="display:flex; gap:12px; margin-bottom:20px; align-items:flex-start;">
+                    <div style="width:10px; height:10px; background:#3b82f6; border-radius:50%; margin-top:6px; flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.9rem; color:#1e293b; margin-bottom:4px; font-weight:600;">
+                            ${dept}
+                        </div>
+                        <div style="font-size:0.85rem; color:#475569; margin-bottom:4px;">
+                            <strong>${item.user || 'System'}</strong> - ${actionDisplay}
+                            ${item.details ? `<br><span style="color:#64748b; font-style:italic; font-size:0.8rem;">${item.details}</span>` : ''}
+                        </div>
+                        <small style="color:#94a3b8; font-size:0.75rem;">
+                            <i class="ri-time-line"></i> ${formatDateTime(item.timestamp)}
+                        </small>
+                    </div>
+                </div>`;
+        });
+        
+        html += '</div>';
+        list.innerHTML = html;
+
+    } catch (e) {
+        console.error("Timeline Load Error:", e);
+        list.innerHTML = '<p style="text-align:center; color:#ef4444; padding:20px;">Failed to load timeline data. Check console.</p>';
+    }
+}
+
+function formatDateTime(sqlDate) {
+    const d = new Date(sqlDate);
+    return d.toLocaleString('en-US', { 
+        month: 'short', day: 'numeric', year: 'numeric', 
+        hour: 'numeric', minute: '2-digit', hour12: true 
+    });
+}

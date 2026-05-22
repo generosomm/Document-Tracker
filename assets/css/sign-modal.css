@@ -1,0 +1,205 @@
+/* assets/css/sign-modal.css */
+
+/* --- Modal Overlay --- */
+.modal-overlay#sign-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: all 0.2s ease;
+}
+.modal-overlay#sign-modal.active { opacity: 1; visibility: visible; }
+
+/* --- Container --- */
+.modal-container.sign-style {
+    background: white; width: 95%; max-width: 1100px; height: 90vh;
+    display: flex; flex-direction: column;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.95); transition: transform 0.2s ease;
+}
+.modal-overlay#sign-modal.active .modal-container.sign-style { transform: scale(1); }
+
+/* --- Header --- */
+.modal-header {
+    padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0;
+    display: flex; justify-content: space-between; align-items: center;
+    background: #fff; flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-left h3 { margin: 0; font-size: 1.1rem; color: #1e293b; font-weight: 600; }
+.icon-circle {
+    width: 36px; height: 36px; background: #eff6ff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+.icon-circle i { color: #3b82f6; font-size: 1.2rem; }
+.close-btn { background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer; }
+.close-btn:hover { color: #ef4444; }
+
+/* --- Body & Canvas (CRITICAL FOR POSITIONING) --- */
+.modal-body {
+    flex-grow: 1; background: #525659; /* PDF Viewer Grey */
+    position: relative; 
+    display: flex; flex-direction: column;
+    overflow: hidden;
+}
+
+/* This container holds both the PDF and the Signature Layer */
+.sign-canvas-area {
+    position: relative; /* Anchor for absolute children */
+    width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    overflow: hidden; 
+}
+
+/* The PDF Viewer */
+#sign-pdf-frame {
+    width: 100%; height: 100%;
+    border: none;
+    background: white;
+}
+
+/* The Transparent Layer on top of PDF */
+#signature-overlay {
+    position: absolute; 
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 100; /* Above PDF */
+    pointer-events: none; /* Let clicks pass through to PDF usually */
+}
+
+/* --- Toolbar --- */
+.sign-toolbar {
+    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 200; /* Above everything */
+    background: white; padding: 8px 16px; border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex; align-items: center; gap: 12px;
+}
+.tool-btn {
+    display: flex; align-items: center; gap: 6px; padding: 8px 16px;
+    background: white; border: 1px solid #e2e8f0; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 500; color: #475569; cursor: pointer;
+}
+.tool-btn:hover { background: #f8fafc; color: #1e293b; }
+.toolbar-divider { width: 1px; height: 20px; background: #cbd5e1; }
+#btn-save-signature {
+    display: flex; align-items: center; gap: 6px; padding: 8px 20px;
+    background: #2563EB; border: none; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 500; color: white; cursor: pointer;
+}
+#btn-save-signature:hover { background: #1d4ed8; }
+#btn-save-signature:disabled { background: #94a3b8; cursor: not-allowed; }
+
+/* Mode Switcher */
+.mode-switch {
+    display: flex; gap: 5px; background: #f1f5f9; padding: 4px; border-radius: 6px; margin-right: 10px;
+}
+.mode-switch .tool-btn {
+    border: none; padding: 6px 12px; font-size: 0.8rem; background: transparent; cursor: pointer;
+}
+.mode-switch .tool-btn.active {
+    background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); color: #1e293b; font-weight: 600;
+}
+
+/* --- Draggable Elements Generic --- */
+.drag-element {
+    position: absolute;
+    pointer-events: auto;
+    cursor: move;
+    z-index: 101;
+    top: 40%; left: 40%;
+}
+
+/* Simple Sig Styles */
+#draggable-sig {
+    width: 200px;
+    border: 2px dashed #2563EB;
+    background: rgba(37, 99, 235, 0.1);
+    padding: 5px; border-radius: 4px;
+}
+#draggable-sig img { width: 100%; display: block; pointer-events: none; }
+
+/* PNPKI Styles */
+#draggable-pnpki {
+    width: 250px; 
+    background: white; 
+    border: 2px solid #15803d; 
+    padding: 5px; 
+    border-radius: 4px;
+}
+
+/* Handles */
+.sig-handle {
+    position: absolute; bottom: -12px; right: -12px;
+    width: 24px; height: 24px; background: #2563EB; color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; cursor: se-resize;
+}
+.sig-remove-btn {
+    position: absolute; top: -10px; right: -10px;
+    background: red; color: white; border: none;
+    border-radius: 50%; width: 20px; height: 20px;
+    cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;
+}
+
+/* --- SUCCESS POPUP UI --- */
+#sign-success-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.95); /* High opacity white cover */
+    z-index: 500; /* Above everything else */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.success-card {
+    text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.success-icon-circle {
+    width: 80px; height: 80px;
+    background: #dcfce7; /* Light Green */
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+}
+
+.success-icon-circle i {
+    font-size: 3rem;
+    color: #15803d; /* Dark Green */
+    opacity: 0;
+    transform: scale(0.5);
+    animation: checkScale 0.4s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.success-card h3 {
+    font-size: 1.5rem; color: #1e293b; margin: 0 0 10px 0;
+    font-weight: 700;
+}
+
+.success-card p {
+    color: #64748b; font-size: 0.9rem; margin: 0 0 25px 0;
+}
+
+#btn-success-close {
+    background: #1e293b; color: white;
+    padding: 10px 30px; border-radius: 8px; border: none;
+    font-weight: 600; cursor: pointer;
+    transition: transform 0.1s;
+}
+#btn-success-close:hover { background: #0f172a; transform: translateY(-2px); }
+
+/* Animations */
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes checkScale {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}

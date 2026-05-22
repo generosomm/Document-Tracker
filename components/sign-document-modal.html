@@ -1,0 +1,126 @@
+<!-- Document Signing Modal -->
+<div class="modal-overlay" id="sign-modal">
+    <div class="modal-container sign-style">
+        <div class="modal-header">
+            <div class="header-left">
+                <div class="icon-circle"><i class="ri-shield-keyhole-line"></i></div>
+                <h3>Digital Signature</h3>
+            </div>
+            <button class="close-btn" id="close-sign-btn"><i class="ri-close-line"></i></button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="sign-toolbar">
+                <div class="mode-switch">
+                    <button class="tool-btn" id="mode-simple">Simple Sign</button>
+                    <button class="tool-btn active" id="mode-pnpki" style="color:#2563EB; font-weight:bold;">
+                        <i class="ri-government-line"></i> PNPKI Mode
+                    </button>
+                    <!-- Note mode button hidden - not needed since only Add Text button is shown -->
+                    <button class="tool-btn" id="mode-note" style="display:none;"></button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <div id="tools-simple" style="display:flex; gap:10px;">
+                    <button class="tool-btn" id="btn-upload-trigger">
+                        <i class="ri-upload-cloud-line"></i> Upload Image
+                    </button>
+                    <input type="file" id="inp-sig-upload" accept="image/png, image/jpeg" style="display: none;">
+                    <button class="tool-btn" id="tool-add-sig">My Signature</button>
+                </div>
+
+                <div id="tools-pnpki" style="display:none; align-items:center; gap:10px;">
+                    <span style="font-size:0.8rem; color:#15803d; font-weight:600; display:none;" id="pnpki-status">
+                        <i class="ri-lock-2-fill"></i> Verified
+                    </span>
+                    <button class="btn-primary" id="btn-pnpki-login" style="padding:6px 12px; font-size:0.8rem;">
+                        Load Certificate (.p12)
+                    </button>
+                </div>
+
+                <div id="tools-note" style="display:none; align-items:center; gap:10px;">
+                    <button class="tool-btn" id="btn-add-note-text" style="background:#3b82f6; color:white; padding:8px 16px;">
+                        <i class="ri-add-line"></i> Add Text
+                    </button>
+                </div>
+                
+                <div class="toolbar-divider"></div>
+                
+                <button class="btn-primary" id="btn-save-signature">
+                    Confirm & Sign <i class="ri-check-line"></i>
+                </button>
+            </div>
+
+            <div class="sign-canvas-area">
+                <iframe id="sign-pdf-frame" src=""></iframe>
+                <div id="signature-overlay">
+                    
+                    <div id="draggable-sig" class="drag-element" style="display:none;">
+                        <img id="sig-image-preview" src="" alt="Signature" onerror="this.style.display='none'">
+                        <div class="sig-handle"><i class="ri-drag-move-2-fill"></i></div>
+                        <button class="sig-remove-btn">&times;</button>
+                    </div>
+
+                    <div id="draggable-pnpki" class="drag-element" style="display:none; width: 250px; background: white; border: 2px solid #15803d; padding: 5px; border-radius: 4px;">
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <div style="width:50px; height:50px; background:#eee; display:flex; align-items:center; justify-content:center;">
+                                <i class="ri-qr-code-line" style="font-size:30px;"></i>
+                            </div>
+                            <div style="font-size:10px; line-height:1.2; color:#333;">
+                                <strong>Digitally Signed by:</strong><br>
+                                <span id="pnpki-signer-name">USER NAME</span><br>
+                                <span style="color:#666;">Date: <span id="pnpki-date">2026-01-16</span></span><br>
+                                <span style="color:#15803d; font-weight:bold;">Verified by PNPKI</span>
+                            </div>
+                        </div>
+                        <div class="sig-handle" style="background:#15803d;"><i class="ri-drag-move-2-fill"></i></div>
+                        <button class="sig-remove-btn" style="background:#dc2626;">&times;</button>
+                    </div>
+
+                    <div id="draggable-note-text" class="drag-element" style="display:none; min-width:200px; max-width:500px; background:white; border:2px solid #3b82f6; padding:10px 15px; border-radius:6px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                        <div style="font-family:Arial, sans-serif; font-size:14px; color:#1e293b; font-weight:500; word-wrap:break-word;" id="note-text-content">
+                            Sample Note Text
+                        </div>
+                        <div class="sig-handle" style="background:#3b82f6;"><i class="ri-drag-move-2-fill"></i></div>
+                        <button class="sig-remove-btn" style="background:#dc2626;">&times;</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pnpki-auth-popup" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:8px; width:300px; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
+            <div style="text-align:center; margin-bottom:15px;">
+                <i class="ri-government-fill" style="font-size: 2rem; color: #2563EB;"></i>
+                <h4 style="margin:10px 0 0; color:#1e293b;">PNPKI Authentication</h4>
+                <small style="color:#64748b;">Select your .p12 soft token</small>
+            </div>
+            <input type="file" id="pnpki-file" accept=".p12,.pfx" style="margin-bottom:10px; font-size:0.8rem;">
+            <input type="password" id="pnpki-password" placeholder="Enter PIN / Password" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-bottom:15px;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('pnpki-auth-popup').style.display='none'" style="flex:1; padding:8px; border:1px solid #ccc; background:white; border-radius:4px; cursor:pointer;">Cancel</button>
+                <button id="btn-pnpki-verify" style="flex:1; padding:8px; background:#15803d; color:white; border:none; border-radius:4px; cursor:pointer;">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Text Popup -->
+    <div id="note-text-popup" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:8px; width:500px; max-width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
+            <div style="text-align:center; margin-bottom:15px;">
+                <i class="ri-text" style="font-size: 2rem; color: #3b82f6;"></i>
+                <h4 style="margin:10px 0 0; color:#1e293b;">Add Note Text</h4>
+                <small style="color:#64748b;">Type your note below</small>
+            </div>
+            <textarea id="note-text-input" placeholder="Type your note here..." 
+                      style="width:100%; min-height:120px; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.9rem; font-family:Arial, sans-serif; resize:vertical; margin-bottom:15px;"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('note-text-popup').style.display='none'" style="flex:1; padding:8px; border:1px solid #ccc; background:white; border-radius:4px; cursor:pointer;">Cancel</button>
+                <button id="btn-confirm-note-text" style="flex:1; padding:8px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;">Add to Document</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,60 +1,46 @@
+<!-- Transfer Document Modal -->
 <div class="modal-overlay" id="transfer-modal">
-    <div class="modal-container transfer-card">
+    <div class="modal-container transfer-style">
         
         <div class="modal-header">
-            <div class="header-content">
-                <div class="icon-badge">
+            <div class="header-left">
+                <div class="icon-circle">
                     <i class="ri-share-forward-fill"></i>
                 </div>
-                <div>
-                    <h3>Transfer Document</h3>
-                    <p>Route this document to another department.</p>
-                </div>
+                <h3>Transfer Document</h3>
             </div>
-            <button class="close-btn" id="close-transfer-modal"><i class="ri-close-line"></i></button>
+            <button class="close-btn" id="close-transfer-btn"><i class="ri-close-line"></i></button>
+        </div>
+        
+        <div class="modal-body">
+            
+            <div class="info-box">
+                <div class="route-label-row">
+                    <i class="ri-map-pin-line"></i>
+                    <span>Current Location</span>
+                </div>
+                <h4 id="route-current">Checking...</h4>
+
+                <div class="route-divider"></div>
+
+                <div class="route-label-row target">
+                    <i class="ri-arrow-right-circle-fill"></i>
+                    <span>Transferring To</span>
+                </div>
+                <h2 id="route-next">Calculating...</h2>
+            </div>
+
+            <div class="form-group">
+                <label for="transfer-remarks">Remarks / Instructions (Optional)</label>
+                <textarea id="transfer-remarks" rows="3" placeholder="Add notes for the receiver..."></textarea>
+            </div>
         </div>
 
-        <div class="modal-body">
-            <form id="transfer-form">
-                <input type="hidden" id="transfer-doc-id">
-
-                <div class="doc-context-box">
-                    <span class="label">Processing Document:</span>
-                    <strong id="transfer-doc-title" class="doc-title-display">...</strong>
-                    <span id="transfer-current-status" class="status-tag">Current Status</span>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Destination Department <span class="req">*</span></label>
-                        <div class="select-wrapper">
-                            <select id="transfer-dept-select" required>
-                                <option value="" disabled selected>Select destination...</option>
-                                <option value="Office of City Mayor">Office of City Mayor</option>
-                                <option value="Legal Office">Legal Office</option>
-                                <option value="Budget Office">Budget Office</option>
-                                <option value="City Accountant">City Accountant</option>
-                                <option value="HRMO">HRMO</option>
-                                <option value="GSO">GSO</option>
-                                <option value="BPLO">BPLO</option>
-                            </select>
-                            <i class="ri-arrow-down-s-line"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Remarks / Instructions <span class="req">*</span></label>
-                        <textarea id="transfer-remarks" rows="3" placeholder="Enter routing instructions or notes..." required></textarea>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-ghost" id="cancel-transfer-btn">Cancel</button>
-                    <button type="submit" class="btn btn-primary-gradient">
-                        Confirm Transfer <i class="ri-arrow-right-line"></i>
-                    </button>
-                </div>
-            </form>
+        <div class="modal-footer">
+            <button class="btn btn-text" id="cancel-transfer-btn">Cancel</button>
+            <button class="btn btn-primary" id="confirm-transfer-btn" disabled>
+                Confirm Transfer
+            </button>
         </div>
     </div>
 </div>

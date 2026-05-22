@@ -1,0 +1,8 @@
+/* components.css - Centralized import for all modal components and layouts */
+@import 'document-preview-modal.css';
+@import 'transfer-modal.css';
+@import 'memo-modal.css';
+@import 'document-timeline-modal.css';
+@import 'submit-document-modal.css';
+@import 'sign-modal.css';
+@import 'header.css';

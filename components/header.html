@@ -1,4 +1,6 @@
+<!-- Header Container -->
 <header class="main-header">
+    <!-- Logo Section -->
     <div class="logo-section">
         <img src="../assets/images/city-of-sto-tomas-logo.jpg" alt="Logo" class="logo-img">
         <div class="logo-text">
@@ -7,21 +9,36 @@
         </div>
     </div>
     
+    <!-- Navigation Menu -->
     <nav class="navbar">
-        <a href="dashboard.html" class="nav-link" data-page="dashboard.html"><i class="ri-home-line"></i> Home</a>
-        <a href="tracking.html" class="nav-link" data-page="tracking.html"><i class="ri-file-list-line"></i> Document Tracking</a>
-        <a href="analytics.html" class="nav-link" data-page="analytics.html"><i class="ri-bar-chart-box-line"></i> Analytics</a>
-        <a href="records.html" class="nav-link" data-page="records.html"><i class="ri-archive-line"></i> Records</a>
+        <a href="dashboard.html" class="nav-link tooltip-trigger" data-page="dashboard.html" data-require-feature="view_dashboard" data-tooltip="Home">
+            <i class="ri-home-line"></i> <span>Home</span>
+            <span id="header-pending-badge" class="nav-badge" style="display:none;">0</span>
+        </a>
+        <a href="tracking.html" class="nav-link tooltip-trigger" data-page="tracking.html" data-require-feature="view_tracking" data-tooltip="Document Tracking">
+            <i class="ri-file-list-line"></i> <span>Document Tracking</span>
+        </a>
+        <a href="analytics.html" class="nav-link tooltip-trigger" data-page="analytics.html" data-require-feature="view_analytics" data-tooltip="Analytics">
+            <i class="ri-bar-chart-box-line"></i> <span>Analytics</span>
+        </a>
+        <a href="records.html" class="nav-link tooltip-trigger" data-page="records.html" data-require-feature="view_records" data-tooltip="Records">
+            <i class="ri-archive-line"></i> <span>Records</span>
+        </a>
     </nav>
     
+    <!-- Header Actions -->
     <div class="header-actions">
-        <button class="btn btn-light" id="global-submit-btn"><i class="ri-upload-cloud-line"></i> Submit Document</button>
+        <button class="btn btn-light tooltip-trigger" id="global-submit-btn" data-require-feature="upload_document" data-tooltip="Submit Document">
+            <i class="ri-upload-cloud-line"></i> <span>Submit Document</span>
+        </button>
         <div class="user-profile">
             <div class="user-info">
                 <span class="name">User Name</span>
                 <span class="role">Role</span>
             </div>
-            <i class="ri-logout-box-r-line" id="logout-btn" style="cursor: pointer;"></i>
+            <button class="logout-icon-btn" id="logout-btn" title="Logout">
+                <i class="ri-logout-box-r-line"></i>
+            </button>
         </div>
     </div>
 </header>

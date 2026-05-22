@@ -3,126 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics | Document Tracking System</title>
+    <title>Analytics | DTS</title>
     
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/analytics.css">
-    <link rel="stylesheet" href="../assets/css/header.css">
-    <link rel="stylesheet" href="../assets/css/submit-document-modal.css">
-
+        <link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/analytics.css">
+<!-- External Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <div id="global-header">  <header class="main-header"> ... </header>
+    <!-- Loading Screen -->
+    <div id="initial-loader">
+        <i class="ri-loader-4-line ri-spin" style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;"></i>
+        <p>Loading Analytics...</p>
     </div>
 
+    <!-- Header Navigation -->
+    <div id="global-header"></div>
+
+    <!-- Main Content -->
     <main class="analytics-container">
         
         <div class="page-header flex-header">
             <div>
                 <h2>Analytics Dashboard</h2>
-                <p>Comprehensive insights and performance metrics</p>
+                <p>System metrics & AI insights</p>
             </div>
-            <div class="header-tools">
-                <button class="btn btn-white"><i class="ri-calendar-line"></i> All Time</button>
-                <button class="btn btn-dark"><i class="ri-download-line"></i> Export Analytics</button>
+            
+            <div style="display:flex; gap:10px; align-items:center;">
+                
+                <div class="scope-selector">
+                    <i class="ri-building-4-line"></i>
+                    <select id="globalScope" onchange="updateDashboardScope(this.value)">
+                        <option value="all" selected>Loading...</option>
+                    </select>
+                </div>
+
+                <div class="scope-selector">
+                    <i class="ri-folder-line"></i>
+                    <select id="globalDocTypeFilter" onchange="if(window.applyDocTypeFilter) window.applyDocTypeFilter(this.value)">
+                        <option value="all" selected>All Documents</option>
+                        <option value="active">Active (Tracking)</option>
+                        <option value="archived">Archived (Records)</option>
+                    </select>
+                </div>
+
+                <div id="analytics-tabs-container" style="display:none; gap:8px;">
+                    <!-- Tabs will be populated dynamically -->
+                </div>
+
+                <div class="scope-selector">
+                    <i class="ri-calendar-event-line"></i>
+                    <select id="globalDateFilter" onchange="if(window.applyGlobalDateFilter) window.applyGlobalDateFilter(this.value)">
+                        <option value="thisYear" selected>This Year</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="thisWeek">This Week</option>
+                        <option value="today">Today</option>
+                        <option disabled>──────────</option>
+                        <option value="q1">Q1 (Jan-Mar)</option>
+                        <option value="q2">Q2 (Apr-Jun)</option>
+                        <option value="q3">Q3 (Jul-Sep)</option>
+                        <option value="q4">Q4 (Oct-Dec)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-dark" onclick="openReportModal()">
+                    <i class="ri-file-chart-line"></i> Report
+                </button>
             </div>
         </div>
 
-        <section class="grid-2">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Document Status Distribution</h3>
+        <section class="insights-grid">
+            <div class="insight-card">
+                <div class="card-top-row">
+                    <div class="icon-bubble blue"><i class="ri-speed-up-line"></i></div>
+                    <div class="info-trigger">
+                        <i class="ri-information-line"></i>
+                        <div class="tooltip">Average time (in days) it takes for documents to go from 'Created' to 'Completed' in the selected period.</div>
+                    </div>
                 </div>
-                <div class="chart-wrapper">
-                    <canvas id="statusChart"></canvas>
+                <div class="kpi-content">
+                    <span class="kpi-label">Avg Age (Days)</span>
+                    <div class="kpi-value-row">
+                        <h4 id="insight-speed">...</h4>
+                        <span id="trend-speed" class="trend-badge neutral">-</span>
+                    </div>
+                    <small class="kpi-sub">vs. previous period</small>
                 </div>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3>Department Workload</h3>
+            
+            <div class="insight-card">
+                <div class="card-top-row">
+                    <div class="icon-bubble green"><i class="ri-check-double-line"></i></div>
+                    <div class="info-trigger">
+                        <i class="ri-information-line"></i>
+                        <div class="tooltip">Percentage of documents fully finalized (Completed/Released) out of all documents active in this period.</div>
+                    </div>
                 </div>
-                <div class="chart-wrapper">
-                    <canvas id="workloadChart"></canvas>
+                <div class="kpi-content">
+                    <span class="kpi-label">Completion Rate</span>
+                    <div class="kpi-value-row">
+                        <h4 id="insight-rate">...</h4>
+                        <span id="trend-rate" class="trend-badge neutral">-</span>
+                    </div>
+                    <small class="kpi-sub">vs. previous period</small>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="card-top-row">
+                    <div class="icon-bubble orange"><i class="ri-hourglass-2-fill"></i></div>
+                    <div class="info-trigger">
+                        <i class="ri-information-line"></i>
+                        <div class="tooltip">The status step where the highest number of incomplete documents are currently stuck.</div>
+                    </div>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Top Bottleneck</span>
+                    <div class="kpi-value-row">
+                        <h4 id="insight-bottle">...</h4>
+                    </div>
+                    <small class="kpi-sub">Needs optimization</small>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="card-top-row">
+                    <div class="icon-bubble red"><i class="ri-error-warning-line"></i></div>
+                    <div class="info-trigger">
+                        <i class="ri-information-line"></i>
+                        <div class="tooltip">Total count of documents flagged as 'Rejected' or returned for 'Revision' in the selected period.</div>
+                    </div>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Critical Issues</span>
+                    <div class="kpi-value-row">
+                        <h4 id="insight-issues">...</h4>
+                        <span id="trend-issues" class="trend-badge neutral">-</span>
+                    </div>
+                    <small class="kpi-sub">Requires attention</small>
                 </div>
             </div>
         </section>
 
-        <section class="grid-sidebar-layout">
+        <section class="grid-3" id="report-section-charts">
             <div class="card">
-                <div class="card-header">
-                    <h3>Processing Time Trends</h3>
-                    <span class="sub-text">Average hours over last 7 days</span>
+                <div class="card-header compact-header">
+                    <h3>Category Mix</h3>
+                    <select class="card-filter" onchange="handleFilterChange('status', this.value)">
+                        <option value="thisYear" selected>This Year</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="thisWeek">This Week</option>
+                        <option value="custom">Custom...</option>
+                    </select>
+                    <div id="custom-status" class="custom-dates" style="display:none;">
+                        <input type="date" id="start-status" class="date-input">
+                        <input type="date" id="end-status" class="date-input">
+                        <button class="btn-go" onclick="applyCustomFilter('status')">Go</button>
+                    </div>
                 </div>
-                <div class="chart-wrapper">
-                    <canvas id="trendChart"></canvas>
-                </div>
+                <div class="chart-wrapper"><canvas id="statusChart"></canvas></div>
             </div>
 
-            <div class="insights-grid">
-                <div class="insight-card blue">
-                    <div class="icon-bubble"><i class="ri-speed-line"></i></div>
-                    <div>
-                        <h4>Processing Speed</h4>
-                        <p>Decreased by <strong>15%</strong> this week. Avg 18h turnaround.</p>
+            <div class="card">
+                <div class="card-header compact-header">
+                    <h3>Department Load</h3>
+                    <select class="card-filter" onchange="handleFilterChange('workload', this.value)">
+                        <option value="thisYear" selected>This Year</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="thisWeek">This Week</option>
+                        <option value="custom">Custom...</option>
+                    </select>
+                    <div id="custom-workload" class="custom-dates" style="display:none;">
+                        <input type="date" id="start-workload" class="date-input">
+                        <input type="date" id="end-workload" class="date-input">
+                        <button class="btn-go" onclick="applyCustomFilter('workload')">Go</button>
                     </div>
                 </div>
-                <div class="insight-card green">
-                    <div class="icon-bubble"><i class="ri-check-double-line"></i></div>
-                    <div>
-                        <h4>Completion Rate</h4>
-                        <p><strong>52.2%</strong> completion rate. 10% rejection rate.</p>
+                <div class="chart-wrapper"><canvas id="workloadChart"></canvas></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header compact-header">
+                    <h3>Processing Velocity</h3>
+                    <div class="filter-group">
+                        <select class="card-filter" onchange="handleFilterChange('trend', this.value)">
+                            <option value="thisYear" selected>This Year</option>
+                            <option value="thisMonth">This Month</option>
+                            <option value="thisWeek">This Week</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                        
+                        <div id="custom-trend" class="custom-dates">
+                            <input type="date" id="start-trend" class="date-input">
+                            <input type="date" id="end-trend" class="date-input">
+                            <button class="btn-go" onclick="applyCustomFilter('trend')">Go</button>
+                        </div>
                     </div>
                 </div>
-                <div class="insight-card orange">
-                    <div class="icon-bubble"><i class="ri-time-line"></i></div>
-                    <div>
-                        <h4>Bottlenecks</h4>
-                        <p>Primary delay: <strong>Signature Collection</strong> (Avg 2.3 days).</p>
-                    </div>
-                </div>
-                <div class="insight-card red">
-                    <div class="icon-bubble"><i class="ri-alert-line"></i></div>
-                    <div>
-                        <h4>Revision Patterns</h4>
-                        <p><strong>45%</strong> of revisions due to incomplete info.</p>
-                    </div>
-                </div>
+                <div class="chart-wrapper"><canvas id="trendChart"></canvas></div>
             </div>
         </section>
 
-        <section class="card table-card">
-            <div class="card-header">
-                <h3><i class="ri-focus-3-line"></i> Personalized Performance Insights</h3>
+        <section class="card table-card" id="report-section-table">
+            <div class="card-header table-header-pad">
+                <div style="display:flex; flex-direction:column;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h3 style="margin:0;">AI Recommendations</h3>
+                        <span style="font-size:0.6rem; background:#ede9fe; color:#6d28d9; padding:2px 6px; border-radius:4px; font-weight:700;">BETA</span>
+                    </div>
+                    <p style="font-size:0.8rem; color:#64748b; margin-top:2px;">Prioritized based on context & sentiment.</p>
+                </div>
+                
+                <div class="filter-group">
+                    <i class="ri-filter-3-line" style="color:#64748b;"></i>
+                    <select id="aiSortFilter" class="card-filter" onchange="window.reloadTable()">
+                        <option value="urgent" selected>Highest Urgency</option>
+                        <option value="oldest">Oldest Pending</option>
+                        <option value="newest">Newest Arrivals</option>
+                    </select>
+                </div>
             </div>
+
             <div class="table-responsive">
                 <table class="analytics-table">
                     <thead>
                         <tr>
-                            <th>Department</th>
-                            <th>Document Title</th>
-                            <th>Status</th>
-                            <th>Processing Time</th>
-                            <th>Performance</th>
-                            <th>AI Suggestion</th>
+                            <th width="15%">Origin</th>
+                            <th width="15%">Current Location</th> 
+                            <th width="25%">Document Context</th>
+                            <th width="12%">Status</th>
+                            <th width="8%">Age</th>
+                            <th width="15%">Urgency Score</th> 
+                            <th width="10%" style="text-align:right;">Action</th> 
                         </tr>
                     </thead>
-                    <tbody id="insights-table-body">
-                        </tbody>
+                    <tbody id="insights-table-body"></tbody>
                 </table>
             </div>
         </section>
     </main>
-    <script src="../assets/js/script.js"></script>
-    <script src="../assets/js/analytics.js"></script>
-    <script src="../assets/js/data.js"></script>
-    <script src="../assets/js/header.js"></script>
-    <script src="../assets/js/submit-document-modal.js"></script>
-</body>
 
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-container report-modal-layout">
+            <div class="report-visual">
+                <div class="report-icon-circle">
+                    <i class="ri-file-pdf-2-fill"></i>
+                </div>
+                <h4>Export Analytics</h4>
+                <p>Create a comprehensive PDF summary of your current dashboard view.</p>
+                <div class="report-meta">
+                    <span><i class="ri-calendar-line"></i> Scope: <b id="rpt-scope-display">This Year</b></span>
+                    <span><i class="ri-hard-drive-2-line"></i> Est. Size: <b>~3 MB</b></span>
+                </div>
+            </div>
+
+            <div class="report-options-side">
+                <div class="report-header">
+                    <h3>Report Settings</h3>
+                    <button class="close-icon" onclick="closeReportModal()"><i class="ri-close-line"></i></button>
+                </div>
+                
+                <div class="option-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="chk-overview" checked>
+                        <span class="checkmark"><i class="ri-check-line"></i></span>
+                        <div class="lbl-text">
+                            <strong>Executive Overview</strong>
+                            <small>KPI cards and top-level metrics</small>
+                        </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="chk-trends" checked>
+                        <span class="checkmark"><i class="ri-check-line"></i></span>
+                        <div class="lbl-text">
+                            <strong>Performance Trends</strong>
+                            <small>Category mix, load, and velocity charts</small>
+                        </div>
+                    </label>
+
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="chk-table" checked>
+                        <span class="checkmark"><i class="ri-check-line"></i></span>
+                        <div class="lbl-text">
+                            <strong>AI Recommendations Table</strong>
+                            <small>List of actionable items and urgency scores</small>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="export-progress" id="export-progress-container" style="display:none;">
+                    <div class="progress-labels">
+                        <span id="progress-text">Generating...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-white" onclick="closeReportModal()">Cancel</button>
+                    <button class="btn btn-dark" id="btn-download-report" onclick="generatePDF()">
+                        <i class="ri-download-cloud-2-line"></i> Generate PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/permission-manager.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/document-preview-modal.js"></script>
+    <script src="../assets/js/submit-document-modal.js"></script>
+    <script src="../assets/js/analytics.js"></script>
+    <script src="../assets/js/document-timeline-modal.js"></script>
+
+    <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0';
+        env.allowLocalModels = false;
+        window.AI_PIPELINE = pipeline;
+    </script>
+</body>
 </html>

@@ -11,13 +11,14 @@
     align-items: center;
     width: 100%;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 /* Logo Section */
-.logo-section { display: flex; align-items: center; gap: 12px; }
-.logo-img { width: 45px; height: 45px; border-radius: 50%; background: #fff; object-fit: cover; }
-.logo-text h1 { font-size: 1.1rem; font-weight: 600; line-height: 1.2; margin: 0; }
-.logo-text span { font-size: 0.8rem; opacity: 0.9; display: block; }
+.logo-section { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.logo-img { width: 45px; height: 45px; border-radius: 50%; background: #fff; object-fit: cover; flex-shrink: 0; }
+.logo-text h1 { font-size: 1.1rem; font-weight: 600; line-height: 1.2; margin: 0; white-space: nowrap; }
+.logo-text span { font-size: 0.8rem; opacity: 0.9; display: block; white-space: nowrap; }
 
 /* Navigation */
 .navbar { display: flex; gap: 2rem; height: 100%; align-items: center; }
@@ -56,12 +57,293 @@
 .user-info { text-align: right; line-height: 1.2; }
 .user-info .name { display: block; font-weight: 600; font-size: 0.9rem; }
 .user-info .role { font-size: 0.75rem; opacity: 0.8; }
-#logout-btn:hover { opacity: 0.8; transform: scale(1.1); }
 
-/* Header Button */
-.btn-light {
-    background: #FFFFFF; color: #2563EB; border: none;
-    padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+.logout-icon-btn, #logout-btn { 
+    background: transparent;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF !important; 
+    font-size: 1.5rem; 
+    transition: all 0.2s ease; 
+    cursor: pointer;
+    padding: 4px;
+    min-width: 24px;
+    min-height: 24px;
 }
-.btn-light:hover { background: #eff6ff; }
+
+.logout-icon-btn i, #logout-btn i {
+    color: #FFFFFF !important;
+    font-size: 1.5rem;
+}
+
+.logout-icon-btn:hover, #logout-btn:hover { 
+    opacity: 0.8; 
+    transform: scale(1.1); 
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+
+/* Header Button - Ultra Specific Selector */
+.main-header .header-actions .btn-light,
+.header-actions > .btn-light,
+#global-submit-btn.btn-light,
+button#global-submit-btn {
+    background: #FFFFFF !important; 
+    color: #2563EB !important; 
+    border: none !important;
+    padding: 0.6rem 1.2rem !important; 
+    border-radius: 6px !important; 
+    font-weight: 600 !important;
+    cursor: pointer !important; 
+    display: inline-flex !important; 
+    align-items: center !important; 
+    gap: 8px !important;
+    white-space: nowrap !important;
+    min-width: auto !important;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+}
+.main-header .header-actions .btn-light:hover,
+#global-submit-btn.btn-light:hover { 
+    background: #eff6ff !important; 
+    transform: translateY(0) !important;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN - Split Screen & Mobile
+   ========================================= */
+
+/* Medium screens / Split-screen (below 1100px) - Keep header mostly intact */
+@media (max-width: 1100px) {
+    .main-header {
+        padding: 0 1rem;
+    }
+    
+    .logo-text h1 {
+        font-size: 1rem;
+    }
+    
+    .logo-text span {
+        display: none; /* Hide the sub-text "City Government of..." */
+    }
+
+    .navbar {
+        gap: 1rem; /* Tighten navigation gap */
+    }
+}
+
+/* Tablet (below 768px) - Hide nav text */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 0 0.75rem;
+    }
+    
+    .logo-section {
+        gap: 8px;
+    }
+    
+    .logo-text h1 {
+        font-size: 0.85rem;
+    }
+    
+    .navbar {
+        gap: 0.75rem;
+    }
+    
+    .nav-link {
+        font-size: 0.85rem;
+        gap: 4px;
+    }
+    
+    .nav-link span {
+        display: none; /* Hide text, show icons only */
+    }
+    
+    .nav-link i {
+        font-size: 1.1rem;
+    }
+    
+    /* KEEP BUTTON FULL SIZE ON TABLET */
+    .main-header .header-actions .btn-light,
+    #global-submit-btn.btn-light {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.85rem !important;
+        white-space: nowrap !important;
+        border-radius: 6px !important;
+        width: auto !important;
+        height: auto !important;
+    }
+    
+    .main-header .btn-light span,
+    #global-submit-btn span {
+        display: inline !important; /* Keep Submit Document text visible */
+    }
+    
+    .main-header .btn-light i,
+    #global-submit-btn i {
+        font-size: 1rem;
+    }
+    
+    .user-info .name {
+        font-size: 0.85rem;
+    }
+    
+    .user-info .role {
+        font-size: 0.7rem;
+    }
+}
+
+/* Mobile (below 480px) - Minimal UI */
+@media (max-width: 480px) {
+    .main-header {
+        padding: 0 0.5rem;
+    }
+    
+    .logo-section {
+        gap: 6px;
+    }
+    
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo-text h1 {
+        font-size: 0.75rem;
+    }
+    
+    .navbar {
+        gap: 0.5rem;
+    }
+    
+    .nav-link span {
+        display: none; /* Show icons only */
+    }
+    
+    .nav-link i {
+        font-size: 1.2rem;
+    }
+    
+    .header-actions {
+        gap: 0.5rem;
+    }
+    
+    .user-profile {
+        padding-left: 0.5rem;
+    }
+    
+    .user-info {
+        display: none; /* Hide user name/role on very small screens */
+    }
+    
+    .btn-light {
+        padding: 0.4rem;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        justify-content: center;
+    }
+}
+
+/* --- TOOLTIP ENGINE --- */
+
+/* Base style for the tooltip container */
+.tooltip-trigger {
+    position: relative;
+}
+
+/* Tooltip appearance */
+.tooltip-trigger::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -35px; /* Position below the icon */
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #1e293b; /* Dark Slate */
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 10001;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Tooltip Arrow */
+.tooltip-trigger::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: #1e293b;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+/* SHOW TOOLTIP ONLY ON NARROW SCREENS (When text spans are hidden) */
+@media (max-width: 900px) {
+    .tooltip-trigger:hover::before {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    .tooltip-trigger:hover::after {
+        opacity: 1;
+    }
+}
+
+/* Navigation Badge Styling */
+.nav-badge {
+    background-color: #EF4444; /* Alert Red */
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 5px;
+    right: -12px; /* Positioned slightly outside the link */
+    border: 2px solid #2563EB; /* Match header blue to look "cut out" */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Ensure nav-link doesn't clip the badge */
+.nav-link {
+    position: relative;
+    overflow: visible !important;
+}
+
+/* Responsive badge adjustments */
+@media (max-width: 900px) {
+    .nav-badge {
+        top: 2px;
+        right: -8px;
+        min-width: 16px;
+        height: 16px;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .nav-badge {
+        top: 0;
+        right: -6px;
+        min-width: 14px;
+        height: 14px;
+        font-size: 0.55rem;
+        border-width: 1.5px;
+    }
+}

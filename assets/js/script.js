@@ -1,108 +1,139 @@
-/* assets/js/script.js */
-
-document.addEventListener('DOMContentLoaded', () => {
+// Global Toast Notification
+window.showToast = function(message, type = 'success') {
+    let container = document.getElementById('global-toast-container');
     
-    // 1. CHECK LOGIN STATUS
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'global-toast-container';
+        document.body.appendChild(container);
+    }
 
-    // Redirect if not logged in and not on login page
-    if (!currentUser && !window.location.href.includes('login.html')) {
-        window.location.href = 'login.html';
+    const icons = {
+        success: 'ri-checkbox-circle-fill',
+        error: 'ri-error-warning-fill',
+        warning: 'ri-alert-fill',
+        info: 'ri-information-fill'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast-message ${type}`;
+    toast.innerHTML = `
+        <i class="${icons[type] || icons.info} toast-icon"></i>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentElement) toast.remove();
+        }, 300);
+    }, 3000);
+};
+
+// Custom Confirm Dialog
+window.showConfirm = function(message, onConfirm, onCancel) {
+    let overlay = document.getElementById('confirm-overlay');
+    
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'confirm-overlay';
+        overlay.className = 'confirm-overlay';
+        overlay.innerHTML = `
+            <div class="confirm-dialog">
+                <div class="confirm-icon">
+                    <i class="ri-question-line"></i>
+                </div>
+                <div class="confirm-message"></div>
+                <div class="confirm-buttons">
+                    <button class="confirm-btn confirm-cancel">Cancel</button>
+                    <button class="confirm-btn confirm-yes">Yes</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    const messageEl = overlay.querySelector('.confirm-message');
+    const yesBtn = overlay.querySelector('.confirm-yes');
+    const cancelBtn = overlay.querySelector('.confirm-cancel');
+
+    messageEl.textContent = message;
+
+    const cleanup = () => {
+        overlay.classList.remove('active');
+        yesBtn.replaceWith(yesBtn.cloneNode(true));
+        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+    };
+
+    overlay.querySelector('.confirm-yes').onclick = () => {
+        cleanup();
+        if (onConfirm) onConfirm();
+    };
+
+    overlay.querySelector('.confirm-cancel').onclick = () => {
+        cleanup();
+        if (onCancel) onCancel();
+    };
+
+    overlay.classList.add('active');
+};
+
+// Initialization and Auth
+document.addEventListener('DOMContentLoaded', () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const isLoginPage = window.location.href.includes('login.html');
+
+    if (!currentUser && !isLoginPage) {
+        const isPages = window.location.pathname.includes('/pages/');
+        window.location.href = isPages ? 'login.html' : 'pages/login.html';
         return;
     }
 
-    // 2. SETUP USER SESSION
-    if (currentUser) {
-        updateUserInfo(currentUser);
-        applyGlobalPermissions(currentUser);
-        activateLogout();
-    }
-
-    // 3. INITIALIZE PAGE TRANSITIONS
-    handlePageTransitions();
-
-    // 4. GLOBAL LISTENER: OPEN SUBMIT MODAL
-    // (The modal HTML/Logic is loaded by modal.js, we just trigger it here)
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('#global-submit-btn');
-        if (btn) {
-            const modal = document.getElementById('submit-modal');
-            if (modal) {
-                modal.classList.add('active');
-            } else {
-                console.warn("Modal component not loaded yet.");
-            }
+    document.addEventListener('headerLoaded', () => {
+        if (currentUser) {
+            updateUserInfo(currentUser); 
+            applyGlobalPermissions(currentUser);
         }
+        setupSubmitModalTrigger();
+        activateLogout();
+        handlePageTransitions(); 
     });
 });
 
-// ==========================================
-// CORE FUNCTIONS
-// ==========================================
-
-/**
- * Handles smooth page transitions (Content Fade Out)
- * Intercepts navigation clicks to animate MAIN CONTENT ONLY.
- */
+// Core Functions
 function handlePageTransitions() {
-    // Wait slightly for header.js to inject nav links
-    setTimeout(() => {
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const targetUrl = link.href;
-                
-                // Only animate if it's a real page change (not hash link or same page)
-                if (targetUrl && !targetUrl.includes('#') && targetUrl !== window.location.href) {
-                    e.preventDefault(); // Stop immediate load
-
-                    // 1. Target ONLY the main content (Leaving Header alone)
-                    const mainContent = document.querySelector('main');
-                    if (mainContent) {
-                        mainContent.classList.add('page-exiting');
-                    }
-
-                    // 2. Wait 150ms for animation to finish, then go
-                    setTimeout(() => {
-                        window.location.href = targetUrl;
-                    }, 150);
-                }
-            });
-        });
-    }, 100); 
-}
-
-/**
- * Updates global user info display (Fallback)
- */
-function updateUserInfo(user) {
-    const nameEls = document.querySelectorAll('.user-info .name');
-    const roleEls = document.querySelectorAll('.user-info .role');
-    
-    nameEls.forEach(el => el.innerText = user.name);
-    roleEls.forEach(el => el.innerText = user.role);
-}
-
-/**
- * Applies role-based UI permissions
- */
-function applyGlobalPermissions(user) {
-    // Super Admin: Add Admin Link
-    if (user.role === 'Super Administrator') {
-        setTimeout(() => {
-            const navbar = document.querySelector('.navbar');
-            if (navbar && !document.getElementById('admin-link')) {
-                const a = document.createElement('a');
-                a.id = 'admin-link'; a.className = 'nav-link';
-/*                a.innerHTML = '<i class="ri-admin-line"></i> Admin'; */
-                a.href = '#'; 
-                navbar.appendChild(a);
+    const links = document.querySelectorAll('a:not([target="_blank"]):not([href^="#"])');
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const target = link.href;
+            if (target && target !== window.location.href && !target.includes('javascript:')) {
+                e.preventDefault(); 
+                document.querySelector('main')?.classList.add('page-exiting');
+                setTimeout(() => window.location.href = target, 300);
             }
-        }, 500);
-    }
-    
-    // CAS: Hide Signing Buttons
+        });
+    });
+}
+
+function setupSubmitModalTrigger() {
+    const btn = document.getElementById('global-submit-btn');
+    if (btn) btn.addEventListener('click', () => {
+        document.getElementById('submit-modal')?.classList.add('active');
+    });
+}
+
+function updateUserInfo(user) {
+    document.querySelectorAll('.user-info .name').forEach(el => el.innerText = user.name);
+    document.querySelectorAll('.user-info .role').forEach(el => el.innerText = user.role);
+}
+
+function applyGlobalPermissions(user) {
     if (user.role === 'CAS') {
         const style = document.createElement('style');
         style.innerHTML = `.btn-sign, button[onclick*="Sign"], .sign-action { display: none !important; }`;
@@ -110,24 +141,19 @@ function applyGlobalPermissions(user) {
     }
 }
 
-/**
- * Global Logout Logic
- */
 function activateLogout() {
-    const logoutBtn = document.querySelector('.ri-logout-box-r-line');
-    if (logoutBtn) {
-        const container = logoutBtn.parentElement;
-        container.style.cursor = 'pointer';
-        
-        // Clone to remove potential duplicate listeners
-        const newBtn = container.cloneNode(true);
-        container.parentNode.replaceChild(newBtn, container);
+    const btn = document.getElementById('logout-btn');
+    if (btn) {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
         
         newBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to log out?')) {
+            showConfirm('Are you sure you want to log out?', () => {
                 localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
-            }
+                const isPages = window.location.pathname.includes('/pages/');
+                fetch(isPages ? '../assets/api/logout.php' : './assets/api/logout.php');
+                window.location.href = isPages ? 'login.html' : 'pages/login.html';
+            });
         });
     }
 }

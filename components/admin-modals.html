@@ -1,0 +1,173 @@
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="modal-overlay">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Edit User Account</h3>
+            <button class="close-btn" onclick="closeAdminModal('edit-user-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-edit-user" onsubmit="event.preventDefault(); submitUserUpdate();">
+                <input type="hidden" id="edit-user-id">
+                
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <input type="text" id="edit-user-type" class="form-control" disabled style="background:#f1f5f9; color:#64748b;">
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="edit-user-name" required class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="edit-user-email" required class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="edit-user-role" class="form-control role-dropdown" required>
+                        <option value="" disabled>Loading roles...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="edit-user-dept" class="form-control dept-dropdown" required>
+                        <option value="" disabled>Loading departments...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>New Password (Optional)</label>
+                    <input type="password" id="edit-user-pass" placeholder="Leave blank to keep current" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width" style="margin-top:15px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-overlay" id="add-user-modal">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Register New User</h3>
+            <button class="close-btn" onclick="closeAdminModal('add-user-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-pre-approve">
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <select id="reg-type" class="form-control" onchange="togglePasswordPlaceholder()">
+                        <option value="local">Local Account</option>
+                        <option value="google">Google Account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" class="form-control" required placeholder="Juan Dela Cruz">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" class="form-control" required placeholder="email@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Assign Password</label>
+                    <input type="text" id="reg-password" class="form-control" required placeholder="Set login password">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="reg-role" class="form-control role-dropdown">
+                        <option value="" disabled selected>Select Role</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="reg-dept" class="dept-dropdown form-control"></select>
+                </div>
+                <button type="submit" class="btn btn-primary full-width" style="margin-top:10px;">Create Account</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Department Modal -->
+<div class="modal-overlay" id="edit-dept-modal">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Edit Department</h3>
+            <button class="close-btn" onclick="closeAdminModal('edit-dept-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-dept-id">
+            <div class="form-group">
+                <label>Department Name</label>
+                <input type="text" id="edit-dept-name" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeAdminModal('edit-dept-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitDeptUpdate()">Update</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="add-dept-modal">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Add Department</h3>
+            <button class="close-btn" onclick="closeAdminModal('add-dept-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-dept">
+                <div class="form-group">
+                    <label>Department Name</label>
+                    <input type="text" id="new-dept-name" class="form-control" placeholder="e.g. MDRRMO" required>
+                </div>
+                <button type="submit" class="btn btn-primary full-width" style="margin-top:15px;">Add Department</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="add-role-modal">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Create New Role</h3>
+            <button class="close-btn" onclick="closeAdminModal('add-role-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-role">
+                <div class="form-group">
+                    <label>Role Name</label>
+                    <input type="text" id="new-role-name" class="form-control" placeholder="e.g. Auditor" required>
+                </div>
+                <button type="submit" class="btn btn-primary full-width" style="margin-top:15px;">Create Role</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="edit-role-modal">
+    <div class="modal-container admin-modal">
+        <div class="modal-header">
+            <h3>Rename Role</h3>
+            <button class="close-btn" onclick="closeAdminModal('edit-role-modal')"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-edit-role">
+                <input type="hidden" id="edit-role-old-name">
+                <div class="form-group">
+                    <label>Role Name</label>
+                    <input type="text" id="edit-role-new-name" class="form-control" required>
+                </div>
+                <div style="margin-top:15px; font-size:0.8rem; color:#64748b; background:#fff7ed; padding:10px; border-radius:6px; border:1px solid #fed7aa;">
+                    <i class="ri-alert-line"></i> <strong>Warning:</strong> Renaming this will update all users and permissions currently assigned to this role.
+                </div>
+                <button type="submit" class="btn btn-primary full-width" style="margin-top:15px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>

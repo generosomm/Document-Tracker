@@ -1,115 +1,133 @@
-/* assets/js/document-timeline-modal.js */
+const TIMELINE_HTML = `
+<div class="modal-overlay" id="timeline-modal" style="z-index: 2147483647;">
+    <div class="modal-container timeline-style">
+        <div class="modal-header">
+            <div class="header-left">
+                <div class="icon-circle orange"><i class="ri-history-line"></i></div>
+                <div><h3>Document Timeline</h3><p class="sub-header">Audit Trail for <span id="tl-doc-id">...</span></p></div>
+            </div>
+            <button class="close-btn" id="close-timeline-btn" style="cursor:pointer;"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="timeline-container" id="timeline-list">
+                <div style="padding:20px; text-align:center;"><i class="ri-loader-4-line ri-spin"></i> Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>`;
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadTimelineModal();
-});
+window.openTimeline = function(docId) {
+    if (!document.getElementById('timeline-modal')) {
+        document.body.insertAdjacentHTML('beforeend', TIMELINE_HTML);
+        
+        const isPages = window.location.pathname.includes('/pages/');
+        const cssPath = isPages ? '../assets/css/document-timeline-modal.css?v=99' : './assets/css/document-timeline-modal.css?v=99';
+        
+        if (!document.querySelector(`link[href*="document-timeline-modal.css"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet'; link.href = cssPath;
+            document.head.appendChild(link);
+        }
 
-async function loadTimelineModal() {
-    if (document.getElementById('timeline-modal')) return;
+        const modalOverlay = document.getElementById('timeline-modal');
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target.id === "timeline-modal") {
+                modalOverlay.classList.remove('active');
+            }
+        });
+    }
+    
+    const modal = document.getElementById('timeline-modal');
+    modal.classList.add('active');
+
+    const closeBtn = document.getElementById('close-timeline-btn');
+    closeBtn.onclick = () => { modal.classList.remove('active'); };
+
+    document.getElementById('tl-doc-id').innerText = docId;
+    fetchTimelineData(docId);
+};
+
+async function fetchTimelineData(docId) {
+    const list = document.getElementById('timeline-list');
+    const isPages = window.location.pathname.includes('/pages/');
+    const api = isPages ? '../assets/api/get_timeline.php' : './assets/api/get_timeline.php';
 
     try {
-        const response = await fetch('../components/document-timeline-modal.html');
-        if (!response.ok) throw new Error("Failed to load timeline modal");
-        const html = await response.text();
-        document.body.insertAdjacentHTML('beforeend', html);
+        const res = await fetch(`${api}?doc_id=${docId}`);
+        const data = await res.json();
         
-        document.getElementById('close-timeline-btn').addEventListener('click', closeTimeline);
+        if(!Array.isArray(data) || data.length === 0) {
+            list.innerHTML = '<p style="text-align:center; padding:20px; color:#64748b;">No history found.</p>';
+            return;
+        }
 
-    } catch (error) {
-        console.error("Error:", error);
+        // Sort by timestamp (oldest to newest)
+        const sortedData = [...data].sort((a, b) => {
+            return new Date(a.timestamp) - new Date(b.timestamp);
+        });
+
+        let html = '<div class="timeline-wrapper" style="border-left:2px solid #e2e8f0; margin-left:10px; padding-left:20px;">';
+        
+        sortedData.forEach(item => {
+            const actionType = item.action ? item.action.toLowerCase() : 'viewed';
+            
+            let actionDisplay = item.action;
+            let badgeHtml = '';
+
+            if (item.action === 'Viewed' && item.view_number) {
+                const count = item.view_number;
+                const ordinal = getOrdinal(count);
+                actionDisplay = "Viewed Document";
+                badgeHtml += `<span style="background:#eff6ff; color:#2563EB; font-size:0.7rem; padding:1px 5px; border-radius:4px; border:1px solid #bfdbfe; margin-left:6px; font-weight:600;">${ordinal} Time</span>`;
+            }
+
+            const deptHtml = item.role ? `<span class="dept-badge" style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.75rem; color:#475569; margin-left:6px; font-weight:normal;">${item.role}</span>` : '';
+
+            let detailsText = item.details || '';
+            detailsText = detailsText.replace(/(Viewed for|Duration:)(.*?)(s|m|h)/gi, '<strong>$1$2$3</strong>');
+
+            html += `
+                <div class="timeline-item ${actionType}" style="position:relative; margin-bottom:20px;">
+                    <div class="timeline-dot" style="position:absolute; left:-27px; top:4px; width:12px; height:12px; background:white; border:2px solid #cbd5e1; border-radius:50%;"></div>
+                    
+                    <div class="timeline-content" style="background:white; padding:12px; border:1px solid #e2e8f0; border-radius:8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <h4 style="margin:0; font-size:0.9rem; color:#1e293b; font-weight:600;">
+                                ${item.user || 'Unknown'} ${deptHtml}
+                            </h4>
+                            <span style="font-size:0.7rem; color:#94a3b8;">${formatDateTime(item.timestamp)}</span>
+                        </div>
+
+                        <div style="margin:2px 0 6px; font-size:0.85rem; color:#334155; font-weight:600;">
+                            ${actionDisplay} ${badgeHtml}
+                        </div>
+
+                        <div style="font-size:0.8rem; color:#64748b; line-height:1.4;">
+                            ${detailsText}
+                        </div>
+                    </div>
+                </div>`;
+        });
+        
+        html += '</div>';
+        list.innerHTML = html;
+
+    } catch (e) {
+        console.error("Timeline Load Error:", e);
+        list.innerHTML = '<p style="text-align:center; color:#ef4444; padding:20px;">Failed to load data.</p>';
     }
 }
 
-// --- GLOBAL FUNCTIONS ---
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
 
-window.openTimeline = function(docId) {
-    // Fallback to globally stored ID if none passed
-    const targetId = docId || window.currentDocId; 
-    
-    // Find document data
-    const documents = window.documents || [];
-    const doc = documents.find(d => d.id === targetId);
-
-    if (!doc) {
-        alert("Document data not found.");
-        return;
-    }
-
-    // Set Header
-    const idLabel = document.getElementById('tl-doc-id');
-    if(idLabel) idLabel.innerText = doc.id;
-    
-    // Render Timeline
-    const feed = document.getElementById('timeline-feed-content');
-    const history = doc.timeline || [];
-
-    if (history.length === 0) {
-        feed.innerHTML = '<div style="padding:40px; text-align:center; color:#94a3b8;">No history available.</div>';
-    } else {
-        let html = '<div class="timeline-container">';
-        
-        // Show newest first
-        [...history].reverse().forEach((item, index) => {
-            const isLatest = index === 0;
-            
-            // 1. Color Logic
-            let dotColor = 'border-gray-300';
-            if (isLatest) dotColor = 'border-green-500';
-            else if (item.action.includes('Viewed') || item.action.includes('Opened')) dotColor = 'border-blue-500';
-            else if (item.action.includes('Rejected')) dotColor = 'border-red-500';
-
-            // 2. Icon Logic
-            let iconClass = 'bg-gray-100 text-gray-500';
-            if (item.action.includes('Forwarded') || item.action.includes('Approved')) iconClass = 'bg-green-50';
-            if (item.action.includes('Viewed') || item.action.includes('Opened')) iconClass = 'bg-blue-50';
-            if (item.action.includes('Rejected')) iconClass = 'bg-red-50';
-            if (item.action.includes('Signed')) iconClass = 'bg-purple-50';
-
-            // 3. Badge Logic
-            let badgeHtml = '';
-            if (item.viewTag) {
-                badgeHtml = `<span class="badge-view"><i class="ri-eye-line"></i> ${item.viewTag}</span>`;
-            }
-
-            html += `
-                <div class="timeline-item">
-                    <div class="tl-sidebar">
-                        <div class="tl-line"></div>
-                        <div class="tl-dot ${dotColor}"></div>
-                    </div>
-                    <div class="tl-body">
-                        <div class="tl-header">
-                            <div>
-                                <span class="tl-user">${item.user}</span>
-                                <span class="tl-role">${item.role}</span>
-                            </div>
-                            <span class="tl-time">${item.time}</span>
-                        </div>
-                        <div class="tl-action-row">
-                            <div class="tl-action-group">
-                                <div class="tl-icon ${iconClass}">
-                                    <i class="${item.icon}"></i>
-                                </div>
-                                <span class="tl-action-text">${item.action}</span>
-                            </div>
-                            ${badgeHtml}
-                        </div>
-                        <div class="tl-details-box">
-                            <strong>Details:</strong><br>
-                            ${item.details}
-                            ${item.meta ? `<div class="tl-meta">${item.meta}</div>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        html += '</div>';
-        feed.innerHTML = html;
-    }
-    
-    document.getElementById('timeline-modal').classList.add('active');
-};
-
-window.closeTimeline = function() {
-    document.getElementById('timeline-modal').classList.remove('active');
-};
+function formatDateTime(sqlDate) {
+    const d = new Date(sqlDate);
+    return d.toLocaleString('en-US', { 
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true 
+    });
+}

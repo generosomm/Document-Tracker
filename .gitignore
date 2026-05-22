@@ -1,0 +1,23 @@
+# Environment variables
+.env
+
+# Vendor directories
+vendor/
+assets/vendor/
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+assets/uploads/*
+!assets/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

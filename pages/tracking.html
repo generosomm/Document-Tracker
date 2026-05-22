@@ -3,169 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Tracking | Document Tracking System</title>
+    <title>Document Tracking | DTS</title>
     
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/header.css">
-    <link rel="stylesheet" href="../assets/css/tracking.css">
-    
-    <link rel="stylesheet" href="../assets/css/submit-document-modal.css">
-    <link rel="stylesheet" href="../assets/css/document-preview-modal.css">
-    <link rel="stylesheet" href="../assets/css/document-timeline-modal.css">
-    <link rel="stylesheet" href="../assets/css/transfer-modal.css"> <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+        <link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/tracking.css">
+<!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- Header Navigation -->
     <div id="global-header"></div>
-    
+
+    <!-- Main Content -->
     <main class="tracking-container">
-
+        
+        <!-- Page Header -->
         <div class="page-header">
-            <h2>Document Tracking</h2>
-            <p>Track and manage all internal documents with timeline visibility</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card yellow clickable" onclick="filterData('pending')">
-                <div class="stat-header"><span>New</span><i class="ri-add-line"></i></div>
-                <div class="stat-value" id="stat-pending">0</div>
-                <div class="stat-desc">Awaiting Initial Review</div>
-            </div>
-            <div class="stat-card blue clickable" onclick="filterData('progress')">
-                <div class="stat-header"><span>In Progress</span><i class="ri-pulse-line"></i></div>
-                <div class="stat-value" id="stat-progress">0</div>
-                <div class="stat-desc">Currently being processed</div>
-            </div>
-            <div class="stat-card green clickable" onclick="filterData('completed')">
-                <div class="stat-header"><span>Completed</span><i class="ri-checkbox-circle-line"></i></div>
-                <div class="stat-value" id="stat-completed">0</div>
-                <div class="stat-desc">Signed and completed</div>
-            </div>
-            <div class="stat-card orange clickable" onclick="filterData('revision')">
-                <div class="stat-header"><span>Needs Attention</span><i class="ri-alert-line"></i></div>
-                <div class="stat-value" id="stat-attention">0</div>
-                <div class="stat-desc">Requires revision</div>
+            <div class="header-text">
+                <h2>Document Tracking</h2>
+                <p>Track and manage all internal documents with timeline visibility</p>
             </div>
         </div>
 
-        <div class="content-wrapper">
-            <div class="toolbar-header">
-                <h3>Documents (<span id="doc-count">0</span>)</h3>
-            </div>
+        <!-- View Mode Tabs -->
+        <div class="view-mode-container" style="margin-bottom: 20px; display:flex; gap:10px;">
+            <button class="view-tab active" id="btn-mode-submitted" onclick="switchTrackingMode('submitted')">
+                <i class="ri-upload-cloud-2-line"></i> Submitted (My Docs)
+            </button>
+            <button class="view-tab" id="btn-mode-approval" onclick="switchTrackingMode('approval')">
+                <i class="ri-pen-nib-line"></i> Approval (For Sign)
+            </button>
+        </div>
 
-            <div class="toolbar-controls">
-                <div class="search-group">
-                    <label>Search</label>
-                    <div class="input-icon">
-                        <i class="ri-search-line"></i>
-                        <input type="text" id="searchInput" placeholder="Search documents...">
-                    </div>
+        <!-- Status Cards -->
+        <section class="stats-grid">
+            <article class="stat-card yellow" onclick="applyStatusFilter('pending')" id="card-pending">
+                <div class="stat-header">
+                    <span>Pending</span>
+                    <i class="ri-time-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="count-pending" style="font-size: 2rem; font-weight: 700; margin: 5px 0;">0</h3>
+                    <small id="desc-pending" class="stat-desc" style="font-size:0.8rem; opacity:0.9;">Loading...</small>
+                </div>
+            </article>
+
+            <article class="stat-card blue" onclick="applyStatusFilter('progress')" id="card-progress">
+                <div class="stat-header">
+                    <span>In Progress</span>
+                    <i class="ri-loader-4-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="count-progress" style="font-size: 2rem; font-weight: 700; margin: 5px 0;">0</h3>
+                    <small id="desc-progress" class="stat-desc" style="font-size:0.8rem; opacity:0.9;">Loading...</small>
+                </div>
+            </article>
+
+            <article class="stat-card green" onclick="applyStatusFilter('completed')" id="card-completed">
+                <div class="stat-header">
+                    <span>Completed</span>
+                    <i class="ri-checkbox-circle-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="count-completed" style="font-size: 2rem; font-weight: 700; margin: 5px 0;">0</h3>
+                    <small id="desc-completed" class="stat-desc" style="font-size:0.8rem; opacity:0.9;">Loading...</small>
+                </div>
+            </article>
+
+            <article class="stat-card orange" onclick="applyStatusFilter('attention')" id="card-attention">
+                <div class="stat-header">
+                    <span>Needs Attention</span>
+                    <i class="ri-alert-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="count-attention" style="font-size: 2rem; font-weight: 700; margin: 5px 0;">0</h3>
+                    <small id="desc-attention" class="stat-desc" style="font-size:0.8rem; opacity:0.9;">Loading...</small>
+                </div>
+            </article>
+        </section>
+
+        <!-- Document Count -->
+        <div class="toolbar-header">
+            <h3>Documents (<span id="doc-count">0</span>)</h3>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="toolbar-controls">
+            <div class="search-group">
+                <label>Search</label>
+                <div class="input-icon">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="searchInput" placeholder="Search by ID, title, or description...">
+                </div>
+            </div>
+            
+            <div class="filters-right">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select class="custom-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="progress">In Progress</option>
+                        <option value="revision">For Revision</option>
+                        <option value="completed">Completed</option>
+                    </select>
                 </div>
 
-                <div class="filters-right">
-                    <div class="filter-group">
-                        <label>Status</label>
-                        <select id="statusFilter" class="custom-select">
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                            <option value="revision">For Revision</option>
-                            <option value="rejected">Rejected</option>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select class="custom-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
                         </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Department</label>
-                        <select id="deptFilter" class="custom-select">
-                            <option value="all">All Departments</option>
-                            <option value="OCM">OCM</option>
-                            <option value="OCVM">OCVM</option>
-                            <option value="CAO">CAO</option>
-                            <option value="SP">SP</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group relative">
-                        <label>Date Range</label>
-                        <div class="date-trigger" id="dateTrigger">
-                            <i class="ri-calendar-line"></i> <span id="dateLabel">All Time</span>
-                        </div>
-                        <div class="date-dropdown" id="dateDropdown">
-                            <div class="date-option active" data-range="all">All Time</div>
-                            <div class="date-option" data-range="today">Today</div>
-                            <div class="date-option" data-range="7days">Last 7 Days</div>
-                            <div class="date-option" data-range="30days">Last 30 Days</div>
-                        </div>
-                    </div>
                 </div>
-            </div>
 
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table class="tracking-table">
-                        <thead>
-                            <tr>
-                                <th width="30"><input type="checkbox"></th>
-                                <th width="90">ID</th>
-                                <th>Title</th>
-                                <th width="80">Department</th>
-                                <th width="120">Status</th>
-                                <th width="110">Category</th>
-                                <th width="100">Date Created</th>
-                                <th width="140">Progress</th>
-                                <th width="130">Assigned To</th>
-                                <th width="80">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
+                <div class="filter-group" id="deptFilterGroup" style="min-width: 180px;">
+                    <label>Current Location</label>
+                    <select class="custom-select" id="deptFilter">
+                        <option value="all">All Departments</option>
+                    </select>
+                </div>
+
+                <div class="filter-group relative">
+                    <label>Date Range</label>
+                    <div class="date-trigger" id="dateTrigger">
+                        <i class="ri-calendar-line"></i>
+                        <span id="dateLabel">All Time</span>
+                    </div>
+                    <div class="date-dropdown" id="dateDropdown">
+                        <div class="date-option active" data-range="all">All Time</div>
+                        <div class="date-option" data-range="today">Today</div>
+                        <div class="date-option" data-range="7days">Last 7 Days</div>
+                        <div class="date-option" data-range="30days">Last 30 Days</div>
+                        <div class="date-option" data-range="custom">Custom Range...</div>
+                        
+                        <div id="customDateInputs" class="custom-date-container" style="display:none;">
+                            <input type="date" id="startDate" class="date-input-small">
+                            <span style="text-align:center; color:#64748b; font-size:0.7rem;">to</span>
+                            <input type="date" id="endDate" class="date-input-small">
+                            <button id="applyCustomDate" class="btn-xs-apply">Apply</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal-overlay" id="sign-modal" style="z-index: 1100;">
-            <div class="modal-container">
-                <div class="modal-header">
-                    <h3>Sign Document</h3>
-                    <button class="close-btn" onclick="closeSign()"><i class="ri-close-line"></i></button>
-                </div>
-                <div class="modal-body">
-                    <div class="signature-upload-area" id="sig-upload-area" onclick="document.getElementById('sig-file-input').click()">
-                        <i class="ri-upload-cloud-2-line" style="font-size:1.5rem; margin-bottom:8px;"></i><br>
-                        <span>Click to Upload Signature (PNG/JPG)</span>
-                        <input type="file" id="sig-file-input" accept="image/*" style="display:none">
-                    </div>
-                    <div class="sig-canvas-container" id="sig-canvas" style="display:none;">
-                        <div class="mock-paper">
-                            <p><strong>OFFICIAL DOCUMENT</strong></p>
-                            <p>Lorem ipsum dolor sit amet...</p>
-                            <br><br><br><br><br><br><br><br><br><br>
-                            <hr>
-                            <p>Approved By:</p>
-                            <div class="drag-signature" id="draggable-sig">
-                                <img src="" id="sig-preview-img" alt="Signature">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" onclick="closeSign()">Cancel</button>
-                    <button class="btn btn-primary" onclick="alert('Signature Applied!'); closeSign();">Apply Signature</button>
-                </div>
+        <!-- Documents Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="tracking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;"><input type="checkbox"></th>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Date Created</th>
+                            <th>Progress</th>
+                            <th id="thAssignedTo">Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
-    <script src="../assets/js/data.js"></script>
+    <!-- JavaScript Files -->
     <script src="../assets/js/script.js"></script>
-    <script src="../assets/js/tracking.js"></script>
-    
     <script src="../assets/js/header.js"></script>
-    <script src="../assets/js/submit-document-modal.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/tracking.js"></script>
+    <script src="../assets/js/transfer-modal.js"></script>
     <script src="../assets/js/document-preview-modal.js"></script>
+    <script src="../assets/js/sign-modal.js"></script>
     <script src="../assets/js/document-timeline-modal.js"></script>
-    <script src="../assets/js/transfer-modal.js"></script> </body>
+    <script src="../assets/js/submit-document-modal.js"></script>
+    <script src="../assets/js/permission-manager.js"></script>
+</body>
 </html>

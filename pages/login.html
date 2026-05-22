@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document Tracking System - Login</title>
-  
-  <link rel="stylesheet" href="../assets/css/login.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Tracking System - Login</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/login.css">
+    
+    <!-- External Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-  <div class="container">
+    <!-- Login Container -->
+    <div class="container">
     <div class="card">
 
       <div class="card-header">
@@ -22,9 +25,7 @@
 
       <form id="loginForm">
         
-        <div id="error-message" class="error-msg" style="display: none;">
-            Invalid email or password.
-        </div>
+        <div id="login-error-message" class="error-msg" style="display: none;"></div>
 
         <label>Email Address</label>
         <input type="email" id="email" required placeholder="Enter approved email">
@@ -33,16 +34,40 @@
         <input type="password" id="password" required placeholder="Enter your password">
 
         <button type="submit" id="loginButton">Sign In</button>
+
+        <div class="google-login-wrapper">
+          <p>Or sign in with</p>
+          <a href="../assets/api/google_login_init.php" class="btn-google">
+              <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo">
+              Continue with Google
+          </a>
+        </div>
         
         <div class="footer-links">
             <a href="#">Forgot Password?</a>
         </div>
       </form>
 
-    </div>
-  </div>
+      <div id="otp-container" style="display: none;">
+        <p style="text-align: center; margin-bottom: 20px; color: #334155;">
+          We sent a 6-digit code to your email.<br>Please enter it below.
+        </p>
 
-  <script src="../assets/js/data.js"></script> 
-  <script src="../assets/js/login.js"></script>
+        <div id="otp-error-message" class="error-msg" style="display: none;"></div>
+
+        <label>Verification Code</label>
+        <input type="text" id="otp-input" placeholder="123456" maxlength="6" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+
+        <button type="button" id="verifyOtpBtn">Verify Code</button>
+
+        <div class="footer-links">
+            <a href="#" onclick="location.reload()">Back to Login</a>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../assets/js/login.js"></script>
 </body>
 </html>

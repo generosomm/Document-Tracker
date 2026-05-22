@@ -5,89 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Document Tracking System</title>
     
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/header.css">
-    
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="stylesheet" href="../assets/css/tracking.css"> <link rel="stylesheet" href="../assets/css/submit-document-modal.css">
-    <link rel="stylesheet" href="../assets/css/document-preview-modal.css">
-    
+        <link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<!-- External Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
+    <!-- Header Navigation -->
     <div id="global-header"></div>
     
+    <!-- Main Content -->
     <main class="dashboard-container">
+        
+        <!-- Page Header -->
         <div class="page-header">
-            <h2>Dashboard Overview</h2>
-            <p>Monitor document status and recent submissions</p>
+            <div class="header-text">
+                <h2>Dashboard Overview</h2>
+                <p>Monitor document status and recent submissions</p>
+            </div>
         </div>
 
+        <!-- Status Cards -->
         <section class="stats-grid">
-            <article class="stat-card yellow" onclick="window.location.href='tracking.html?status=pending'">
-                <div class="stat-header"><span>New</span><i class="ri-add-line"></i></div>
-                <div class="stat-value" id="stat-pending">0</div>
+            <article class="stat-card yellow clickable" id="card-pending" onclick="window.location.href='tracking.html?status=pending'">
+                <div class="stat-header"><span>Pending</span><i class="ri-add-line"></i></div>
+                <div class="stat-value" id="stat-count-new">0</div>
                 <div class="stat-desc">Awaiting Initial Review</div>
             </article>
-
-            <article class="stat-card blue" onclick="window.location.href='tracking.html?status=progress'">
+            <article class="stat-card blue clickable" id="card-progress" onclick="window.location.href='tracking.html?status=progress'">
                 <div class="stat-header"><span>In Progress</span><i class="ri-pulse-line"></i></div>
-                <div class="stat-value" id="stat-progress">0</div>
+                <div class="stat-value" id="stat-count-progress">0</div>
                 <div class="stat-desc">Currently being processed</div>
             </article>
-
-            <article class="stat-card green" onclick="window.location.href='tracking.html?status=completed'">
+            <article class="stat-card green clickable" id="card-completed" onclick="window.location.href='tracking.html?status=completed'">
                 <div class="stat-header"><span>Completed</span><i class="ri-checkbox-circle-line"></i></div>
-                <div class="stat-value" id="stat-completed">0</div>
+                <div class="stat-value" id="stat-count-completed">0</div>
                 <div class="stat-desc">Signed and completed</div>
             </article>
-
-            <article class="stat-card orange" onclick="window.location.href='tracking.html?status=revision'">
+            <article class="stat-card orange clickable" id="card-attention" onclick="window.location.href='tracking.html?status=revision'">
                 <div class="stat-header"><span>Needs Attention</span><i class="ri-alert-line"></i></div>
-                <div class="stat-value" id="stat-attention">0</div>
+                <div class="stat-value" id="stat-count-attention">0</div>
                 <div class="stat-desc">Requires revision</div>
             </article>
         </section>
 
+        <!-- Content Panels -->
         <section class="content-grid">
+            
+            <!-- New Documents Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3><i class="ri-notification-3-line"></i> New Documents</h3>
-                    <span class="badge" id="new-docs-badge">0 Pending</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <h3><i class="ri-notification-3-line"></i> New Documents</h3>
+                        <span class="badge" id="new-docs-badge">0 Pending</span>
+                    </div>
+                    <button id="btn-sort-new" class="btn-icon" title="Sort: Newest First">
+                        <i class="ri-sort-desc"></i>
+                    </button>
                 </div>
                 <div class="list-container" id="new-docs-list">
+                    <div style="padding: 30px; text-align: center; color: #94a3b8;">
+                        <i class="ri-loader-4-line ri-spin" style="font-size: 1.5rem; margin-bottom: 8px; display: block;"></i> 
+                        Syncing...
                     </div>
+                </div>
             </div>
 
+            <!-- Memos Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3><i class="ri-mail-line"></i> Memos</h3><span class="badge" style="background-color: #9333ea;">Static Demo</span>
-                </div>
-                <div class="list-container">
-                    <div class="list-item">
-                        <div class="icon-box orange"><i class="ri-mail-open-line"></i></div>
-                        <div class="item-content">
-                            <div class="item-head">
-                                <h4 class="item-title">Holiday Schedule</h4><span class="item-ref">MEMO-2025-001</span>
-                            </div>
-                            <p class="item-desc">Adjusted office hours for the upcoming holiday season.</p>
-                            <span class="item-meta"><i class="ri-calendar-line"></i> 2025-01-07</span>
-                        </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h3><i class="ri-mail-line"></i> Memos</h3>
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-icon" onclick="openMemoHistory()" title="View Archived/Expired Memos">
+                            <i class="ri-history-line" style="color:#64748b;"></i>
+                        </button>
+                        <button id="btn-add-memo" class="btn-icon" onclick="openMemoForm()" title="Post Announcement" data-require-feature="upload_memo">
+                            <i class="ri-add-circle-fill" style="color:#2563EB;"></i>
+                        </button>
                     </div>
                 </div>
+                <div class="memo-filters">
+                    <select id="memo-type-filter" class="filter-select" onchange="applyMemoFilters()">
+                        <option value="all">All Types</option>
+                        <option value="Announcement">Announcement</option>
+                        <option value="Urgent">Urgent</option>
+                        <option value="Holiday">Holiday</option>
+                    </select>
+                    <div class="toggle-switch">
+                        <button id="audience-all" class="toggle-btn active" onclick="setAudienceFilter('all')">All Memos</button>
+                        <button id="audience-me" class="toggle-btn" onclick="setAudienceFilter('me')">For Me</button>
+                    </div>
+                </div>
+                <div class="list-container" id="memo-list-container">
+                    <div style="padding:20px; text-align:center; color:#94a3b8;">Loading memos...</div>
+                </div>
             </div>
+
         </section>
+    </main>
 
-        </main>
-
-    <script src="../assets/js/data.js"></script> 
-    <script src="../assets/js/script.js"></script> 
-    <script src="../assets/js/dashboard.js"></script> 
-    
-    <script src="../assets/js/header.js"></script> 
+    <!-- JavaScript Files -->
+    <script src="../assets/js/header.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/permission-manager.js"></script>
+    <script src="../assets/js/memo-modal.js"></script>
     <script src="../assets/js/submit-document-modal.js"></script>
-    <script src="../assets/js/document-preview-modal.js"></script> 
+    <script src="../assets/js/document-preview-modal.js"></script>
+    <script src="../assets/js/transfer-modal.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/document-timeline-modal.js"></script>
+    <script src="../assets/js/sign-modal.js"></script>
 </body>
 </html>

@@ -133,3 +133,54 @@ button:disabled {
 .footer-links a:hover {
     text-decoration: underline;
 }
+
+/* =========================================
+   5. GOOGLE LOGIN BUTTON (New)
+   ========================================= */
+   .google-login-wrapper {
+    margin-top: 24px;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+}
+
+.google-login-wrapper p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    background-color: #ffffff;
+    color: #374151; /* Dark Grey Text */
+    border: 1px solid #cbd5e1;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+
+.btn-google:hover {
+    background-color: #f8fafc; /* Very light gray */
+    border-color: #94a3b8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-google:active {
+    background-color: #f1f5f9;
+    transform: translateY(1px);
+}
+
+.btn-google img {
+    width: 18px;
+    height: 18px;
+    pointer-events: none; /* Prevents dragging the image */
+}
