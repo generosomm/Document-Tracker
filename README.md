@@ -1,81 +1,89 @@
+---
 # Document Tracker System (DTS)
 
-Document Tracker System (DTS) is a web application for managing, routing, and tracking documents and memos across organizational units. DTS is used to submit, route, approve, sign, archive, and view document timelines with role-based access control.
+Document Tracker System (DTS) is a PHP web application for submitting, routing, tracking, and archiving documents and memos. It provides role-based access, timeline/history views, PDF generation, email notifications, and optional Google OAuth authentication.
 
-This README is intended for all audiences (developers, deployers, and project collaborators). Technical setup and deep architecture details live in `/docs` — follow that order when onboarding.
+This README is a professional project entrypoint for contributors, maintainers, and deployers. For full developer onboarding and architecture, see the `docs/` folder linked below.
 
-## Who is this for
-- Project contributors who need a quick orientation
-- Developers who will run and modify the code locally
-- IT/DevOps preparing local or production deployments
+Table of contents
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Quick start (summary)](#quick-start-summary)
+- [Docs and references](#docs-and-references)
+- [Security & sharing](#security--sharing)
+- [Contributing](#contributing)
 
-## What the app does (high level)
-- Submit and route documents between departments
-- Track document history and timeline with events
-- Transfer and archive documents
-- Generate and manipulate PDFs (FPDF/FPDI)
-- Send email notifications and memo blasts
-- Optional Google OAuth login integration
+## Features
+- Document submission, routing, transfer, and archival
+- Document timeline and activity history with notes and actors
+- Role-based user and permission management
+- PDF generation and manipulation (FPDF/FPDI)
+- Email notifications and memo blasts (PHPMailer)
+- Optional Google OAuth authentication for login
 
 ## Tech stack
-- Backend: PHP (plain PHP scripts), Composer for package management
+- Backend: PHP (vanilla scripts), Composer for dependency management
 - Database: MySQL / MariaDB
 - Frontend: HTML, CSS, Vanilla JavaScript
-- Key libraries: PHPMailer, Google API Client, FPDI/FPDF
-- Local runtime: Apache (XAMPP) recommended for PHP endpoints
+- Libraries: PHPMailer, Google API Client, FPDI/FPDF
+- Local runtime: Apache (recommended via XAMPP for Windows)
 
-## Project layout
-Top-level folders and purpose:
+## Project structure
+Top-level layout (important files and directories):
 
-- `pages/` — entry HTML pages (login.html, dashboard.html, records.html, etc.)
-- `assets/js/` — frontend JavaScript code
-- `assets/css/` — stylesheets
-- `assets/api/` — backend PHP endpoints (login, document API, admin API)
-- `components/` — reusable HTML partials & modals
-- `assets/libs/` — bundled third-party library code (consider using Composer instead)
-- `vendor/` — Composer-managed dependencies (should be ignored in git)
-- `database/` — schema and SQL migration files
-- `docs/` — full onboarding, API reference, and architecture docs
+```
+Document-Tracker/
+├─ assets/
+│  ├─ api/                 # PHP endpoints (login, document APIs, admin)
+│  ├─ css/                 # stylesheets
+│  ├─ js/                  # frontend JavaScript
+│  ├─ libs/                # bundled third-party libraries (FPDI, FPDF)
+│  └─ composer.json        # (duplicate manifest - prefer root composer.json)
+├─ components/             # HTML partials & modals
+├─ database/
+│  └─ schema.sql           # DB schema and migrations
+├─ docs/                   # detailed docs: setup, API, architecture
+├─ pages/                  # app entry pages (login, dashboard, records...)
+├─ uploads/                # runtime uploads (git-ignored)
+├─ vendor/                 # composer packages (git-ignored)
+├─ composer.json           # project's Composer manifest (root)
+├─ .env.example            # configuration template (do not commit secrets)
+└─ README.md               # this file
+```
 
-## Quick start (overview)
-For full instructions see `docs/setup-and-deployment.md`. Short walkthrough:
+Notes:
+- `assets/api/` contains all server-side endpoints used by the frontend.
+- `assets/libs/` contains bundled libraries included directly; consider using Composer (`vendor/`) instead to avoid duplicate code.
+
+## Quick start (summary)
+For step-by-step setup see `docs/setup-and-deployment.md`. Minimal summary:
 
 1. Install XAMPP (Apache + MySQL) and Composer.
-2. Place the repo under XAMPP's `htdocs/` (e.g. `C:\xampp\htdocs\Document-Tracker`).
-3. From project root run:
+2. Place the project in XAMPP `htdocs` (e.g. `C:\xampp\htdocs\Document-Tracker`).
+3. Run `composer install` from the project root.
+4. Copy `.env.example` to `.env` and fill DB and OAuth values.
+5. Import DB schema: `mysql -u root -p dts_db < database/schema.sql`.
+6. Start Apache and open `http://localhost/Document-Tracker/pages/login.html`.
 
-```bash
-composer install
-```
+## Docs and references
+- [Setup & Deployment](docs/setup-and-deployment.md)
+- [Project Overview](docs/project-overview.md)
+- [Architecture & Flows](docs/architecture-and-flows.md)
+- [API Reference](docs/api-reference.md)
+- [Database Reference](docs/database-reference.md)
+- [Known Issues & Notes](docs/known-issues-and-notes.md)
 
-4. Copy `.env.example` to `.env` and fill in database and OAuth values.
-5. Import schema:
-
-```bash
-mysql -u root -p dts_db < database/schema.sql
-```
-
-6. Start Apache and open: `http://localhost/Document-Tracker/pages/login.html`.
-
-## Important operational notes
-- Do not open the frontend via Live Server (:5500) — it cannot reach PHP API endpoints. Use Apache/localhost.
-- Keep secrets out of git: never commit `.env` or client secrets. Use `.env.example` as a template.
-- `vendor/`, `uploads/` and runtime-generated files are git-ignored by default.
-
-## Docs & references (read this order)
-- [1 - Setup & Deployment](docs/setup-and-deployment.md)
-- [2 - Project Overview](docs/project-overview.md)
-- [3 - Architecture & Flows](docs/architecture-and-flows.md)
-- [4 - API Reference](docs/api-reference.md)
-- [5 - Database Reference](docs/database-reference.md)
-- [6 - Known Issues & Notes](docs/known-issues-and-notes.md)
+## Security & sharing
+- Never commit `.env` or secrets. Use `.env.example` for templates.
+- `vendor/`, `uploads/`, and other generated files are ignored via `.gitignore`.
+- If secrets were committed, remove them from history with `git filter-repo` or BFG and rotate credentials.
 
 ## Contributing
-- Create a branch per feature/fix, open a PR with a clear description.
-- Avoid committing large binaries or secrets; use `uploads/` for local files and keep it ignored.
-
-## Need help?
-- Reach out to repository owner or open an issue in the remote repo. Follow the docs in `/docs` for troubleshooting and deployment guidance.
+- Use feature branches and open pull requests with clear descriptions.
+- Keep large binary files out of the repository; use external storage if needed.
 
 ---
-This README provides orientation — see `/docs` for step-by-step developer and deployment instructions.
+If you'd like, I can also:
+- expand the `Project structure` section with file-level descriptions for `assets/api/`, `pages/`, and the major JS modules, or
+- add a polished `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
