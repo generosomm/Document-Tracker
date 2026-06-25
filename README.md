@@ -83,7 +83,3 @@ For step-by-step setup see `docs/setup-and-deployment.md`. Minimal summary:
 - Use feature branches and open pull requests with clear descriptions.
 - Keep large binary files out of the repository; use external storage if needed.
 
----
-If you'd like, I can also:
-- expand the `Project structure` section with file-level descriptions for `assets/api/`, `pages/`, and the major JS modules, or
-- add a polished `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
